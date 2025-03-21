@@ -1,0 +1,13 @@
+# Ignore data files
+
+*.nc
+*.csv
+*.txt
+
+# Ignore temporary files
+*.log
+*.tmp
+
+# Ignore directories
+data/
+results/
