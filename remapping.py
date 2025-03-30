@@ -29,8 +29,3 @@ for filename in os.listdir(input_dir):
             #Exception Handling
         except subprocess.CalledProcessError as e:
             print(f'Error regridding {filename}: {e}')
-
-
-
-
-
