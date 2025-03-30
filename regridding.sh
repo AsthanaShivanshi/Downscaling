@@ -2,13 +2,9 @@
 # Directories
 INPUT_DIR="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Targets_Rhires_TabsD"
 OUTPUT_DIR="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Inputs_regridded_RhiresD_TabsD"
-GRID_FILE="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/RCM_grid.txt"
 
-# Longitude & Latitude extent of Switzerland
-LON_MIN=5.75553
-LON_MAX=10.70298
-LAT_MIN=45.64363
-LAT_MAX=48.06181
+# Define the grid spacing (0.11 degrees)
+GRID_SPACING="0.11"
 
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
@@ -21,14 +17,11 @@ for file in "$INPUT_DIR"/*.nc; do
 
     echo "Processing $filename ..."
 
-    # Step 1: Regridding using bilinear interpolation with RCM grid
-    cdo remapbil,"$GRID_FILE" "$file" "$temp_regrid"
+    # Step 1: Regridding using bilinear interpolation to a regular grid with 0.11 degree spacing
+    cdo remapbil,r${GRID_SPACING}/${GRID_SPACING} "$file" "$temp_regrid"
 
-    # Step 2: Cropping to Swiss lat/lon extent
-    cdo sellonlatbox,$LON_MIN,$LON_MAX,$LAT_MIN,$LAT_MAX "$temp_regrid" "$output_file"
-
-    # Remove temporary file
-    rm "$temp_regrid"
+    # Step 2: Save the regridded output
+    mv "$temp_regrid" "$output_file"
 
     echo "Finished processing: $output_file"
 done
