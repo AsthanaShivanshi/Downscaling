@@ -4,11 +4,11 @@ import os
 import subprocess
 
 #Loading the data and specifying the directories
-input_dir = '/Users/sasthana/Documents/Downscaling/data/Targets_RhiresD_TabsD'
-output_dir = '/Users/sasthana/Documents/Downscaling/data/Inputs_regridded_RhiresD_TabsD'
+input_dir = '/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Targets_Rhires_TabsD'
+output_dir = '/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Inputs_regridded_RhiresD_TabsD'
 
 #Defining the grid resolution file in .txt format
-resolution_spec_file= '/Users/sasthana/Documents/Downscaling/data/grid_12_kms_file.txt'
+resolution_spec_file= '/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/grid_12_kms_file.txt'
 
 for filename in os.listdir(input_dir):
     #Regridding loop after confirming files exist and are accessible
