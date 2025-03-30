@@ -8,7 +8,7 @@ input_dir = '/Users/sasthana/Documents/Downscaling/data/Targets_RhiresD_TabsD'
 output_dir = '/Users/sasthana/Documents/Downscaling/data/Inputs_regridded_RhiresD_TabsD'
 
 #Defining the grid resolution file in .txt format
-resolution_spec_file= '/Users/sasthana/Documents/data/grid_12_kms_file.txt'
+resolution_spec_file= '/Users/sasthana/Documents/Downscaling/data/grid_12_kms_file.txt'
 
 for filename in os.listdir(input_dir):
     #Regridding loop after confirming files exist and are accessible
