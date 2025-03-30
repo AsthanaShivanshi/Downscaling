@@ -3,8 +3,8 @@
 INPUT_DIR="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Targets_Rhires_TabsD"
 OUTPUT_DIR="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Inputs_regridded_RhiresD_TabsD"
 
-# Define the grid spacing (0.11 degrees)
-GRID_SPACING="0.11"
+# Reference grid file
+REFERENCE_GRID="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/tas_11km_limited.nc"
 
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
@@ -17,8 +17,8 @@ for file in "$INPUT_DIR"/*.nc; do
 
     echo "Processing $filename ..."
 
-    # Step 1: Regridding using bilinear interpolation to a regular grid with 0.11 degree spacing
-    cdo remapbil,r${GRID_SPACING}/${GRID_SPACING} "$file" "$temp_regrid"
+    # Step 1: Regridding using bilinear interpolation to the grid of tas_11km_limited.nc
+    cdo remapbil,"$REFERENCE_GRID" "$file" "$temp_regrid"
 
     # Step 2: Save the regridded output
     mv "$temp_regrid" "$output_file"
