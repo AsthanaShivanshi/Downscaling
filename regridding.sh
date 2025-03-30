@@ -12,10 +12,3 @@ module load cdo
 
 # Run the Python script
 python3 regridding.py
-
-# Check if the script ran successfully
-if [ $? -eq 0 ]; then
-    echo "Regridding completed successfully."
-else
-    echo "There was an error during the regridding process."
-fi
