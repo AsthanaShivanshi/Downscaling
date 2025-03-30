@@ -19,9 +19,9 @@ for filename in os.listdir(input_dir):
     #Using cdo for remapping using bilinear interpolation
         cdo_command = [
                 'cdo', 
-                'remapbil,' + grid_file, 
-                input_file, 
-                output_file
+                'remapbil,' + resolution_spec_file, 
+                in_file, 
+                out_file
             ]
         try:
             subprocess.run(cdo_command, check=True)
