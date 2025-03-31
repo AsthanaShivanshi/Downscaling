@@ -1,7 +1,7 @@
 #!/bin/bash
 # Directories
 INPUT_DIR="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Targets_Rhires_TabsD_Tmin_Tmax"
-OUTPUT_DIR="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Inputs_regridded_RhiresD_TabsD"
+OUTPUT_DIR="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/Inputs_regridded_RhiresD_TabsD_Tmin_Tmax"
 
 # Reference grid file
 REFERENCE_GRID="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/tas_11km_limited.nc"
@@ -10,9 +10,9 @@ REFERENCE_GRID="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/D
 mkdir -p "$OUTPUT_DIR"
 
 # Input concatenated file
-input_file="${INPUT_DIR}/concatenated_RhyresD_71_2000.nc"
-output_file="${OUTPUT_DIR}/regridded_11km_concatenated_RhyresD_71_2000.nc"
-temp_regrid="${OUTPUT_DIR}/temp_regrid_concatenated_RhyresD_71_2000.nc"
+input_file="${INPUT_DIR}/concatenated_Tmax_71_2000.nc"
+output_file="${OUTPUT_DIR}/regridded_11km_concatenated_Tmax_71_2000.nc"
+temp_regrid="${OUTPUT_DIR}/temp_regrid_concatenated_Tmax_71_2000.nc"
 
 echo "Processing concatenated file..."
 
