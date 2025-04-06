@@ -32,7 +32,7 @@ def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm
             # If coordinates are labeled as y/x, perform interpolation based on those
             var2 = var2.interp(y=var1.y, x=var1.x, method="nearest")
         else:
-            # Raise an error if coordinate names are unrecognized
+            # Handle the case where coordinate names are unrecognized
             raise ValueError(f"Unable to regrid: coordinate names not recognized. var2 coordinates are {var2.coords}")
 
     # Calculating Spearman's correlation
@@ -57,8 +57,8 @@ def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm
 
     # Attempt to extract coordinate names (handle both lat/lon and x/y)
     coords = spearman_corr.coords
-    possible_x = [c for c in coords if 'lon' in c or c in ['x', 'easting', 'X']]
-    possible_y = [c for c in coords if 'lat' in c or c in ['y', 'northing', 'Y']]
+    possible_x = [c for c in coords if 'lon' in c or c in ['x', 'E', 'X']]
+    possible_y = [c for c in coords if 'lat' in c or c in ['y', 'N', 'Y']]
     x_coord = possible_x[0] if possible_x else list(coords)[-1]
     y_coord = possible_y[0] if possible_y else list(coords)[-2]
 
