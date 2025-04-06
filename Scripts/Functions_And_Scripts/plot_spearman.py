@@ -4,44 +4,26 @@ import pyproj
 import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
 
-
 def project_curvilinear_to_latlon(E, N, projection_str="epsg:3395"):
     """Project curvilinear E, N coordinates to lat, lon using pyproj."""
-    
-    # Ensure E and N are numpy arrays
-    E = np.asarray(E)
-    N = np.asarray(N)
-    
     # Flatten the input arrays
-    E_flat = E.flatten()
-    N_flat = N.flatten()
-    
-    # Handle NaNs: mask NaNs to avoid issues during transformation
-    mask = ~np.isnan(E_flat) & ~np.isnan(N_flat)
-    E_flat = E_flat[mask]
-    N_flat = N_flat[mask]
-    
+    E_flat = E.values.flatten() if isinstance(E, xr.DataArray) else E.flatten()
+    N_flat = N.values.flatten() if isinstance(N, xr.DataArray) else N.flatten()
+
     # Define the transformer from projection
     transformer = pyproj.Transformer.from_proj(
         pyproj.Proj(init="epsg:3395"),  # Source projection (Mercator)
         pyproj.Proj(init="epsg:4326")   # Destination projection (WGS84 lat-lon)
     )
-    
+
     # Transform the coordinates
     lon_flat, lat_flat = transformer.transform(E_flat, N_flat)
-    
-    # Reshape back to the original grid shape
-    lon = np.full(E.shape, np.nan)
-    lat = np.full(N.shape, np.nan)
-    
-    lon_flat_idx = np.where(mask)[0]
-    lat_flat_idx = np.where(mask)[0]
-    
-    lon.flat[lon_flat_idx] = lon_flat
-    lat.flat[lat_flat_idx] = lat_flat
-    
-    return lon, lat
 
+    # Reshape back to original grid shape
+    lon = lon_flat.reshape(E.shape)
+    lat = lat_flat.reshape(N.shape)
+
+    return lon, lat
 
 def regrid_to_regular_grid(var1, var2, target_lat, target_lon):
     """
@@ -53,10 +35,8 @@ def regrid_to_regular_grid(var1, var2, target_lat, target_lon):
     
     return var1_interp, var2_interp
 
-
 def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm"):
     """This function plots Spearman's correlation between two variables after projecting them to lat-lon"""
-    
     # Load datasets
     ds1 = xr.open_dataset(file1)
     ds2 = xr.open_dataset(file2)
@@ -69,6 +49,11 @@ def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm
     E1, N1 = ds1["E"], ds1["N"]
     E2, N2 = ds2["E"], ds2["N"]
     
+    # Resample ds2's N to match ds1's N (i.e., make the latitudes compatible)
+    target_N = ds1["N"]
+    ds2_resampled = ds2.interp(N=target_N)
+    var2_resampled = ds2_resampled[var2_name]
+
     # Project the curvilinear grids to lat-lon
     lon1, lat1 = project_curvilinear_to_latlon(E1, N1)
     lon2, lat2 = project_curvilinear_to_latlon(E2, N2)
@@ -78,7 +63,7 @@ def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm
     target_lon = np.linspace(np.min(lon1), np.max(lon1), len(lon1))
     
     # Regrid the variables to the regular lat-lon grid
-    var1_interp, var2_interp = regrid_to_regular_grid(var1, var2, target_lat, target_lon)
+    var1_interp, var2_interp = regrid_to_regular_grid(var1, var2_resampled, target_lat, target_lon)
     
     # Calculate Spearman's correlation
     def spearman(x, y):
@@ -88,7 +73,6 @@ def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm
         else:
             return np.nan
 
-    # Apply Spearman's correlation to each time step
     spearman_corr = xr.apply_ufunc(spearman, var1_interp, var2_interp,
                                    input_core_dims=[['time'], ['time']],
                                    vectorize=True,
