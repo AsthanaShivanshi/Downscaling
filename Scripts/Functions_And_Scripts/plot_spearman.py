@@ -5,19 +5,24 @@ import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
 
 def project_curvilinear_to_latlon(E, N, projection_str="epsg:3395"):
-    """
-    This function takes in curvilinear E and N coordinates and transforms them
-    to regular lat-lon coordinates using pyproj.
-    """
-    # Define the pyproj transformer
+    """Project curvilinear E, N coordinates to lat, lon using pyproj."""
+    # Flatten the input arrays
+    E_flat = E.values.flatten() if isinstance(E, xr.DataArray) else E.flatten()
+    N_flat = N.values.flatten() if isinstance(N, xr.DataArray) else N.flatten()
+
+    # Define the transformer from projection
     transformer = pyproj.Transformer.from_proj(
-        pyproj.Proj(init="epsg:3395"), 
-        pyproj.Proj(init="epsg:4326")   # Destination: WGS84 lat-lon
+        pyproj.Proj(init="epsg:3395"),  # Source projection (Mercator)
+        pyproj.Proj(init="epsg:4326")   # Destination projection (WGS84 lat-lon)
     )
-    
-    # Transform the E, N coordinates to lat, lon
-    lon, lat = transformer.transform(E, N)
-    
+
+    # Transform the coordinates
+    lon_flat, lat_flat = transformer.transform(E_flat, N_flat)
+
+    # Reshape back to original grid shape
+    lon = lon_flat.reshape(E.shape)
+    lat = lat_flat.reshape(N.shape)
+
     return lon, lat
 
 
