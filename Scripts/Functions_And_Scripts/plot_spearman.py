@@ -11,9 +11,9 @@ def project_curvilinear_to_latlon(E, N, projection_str="epsg:3395"):
     N_flat = N.values.flatten() if isinstance(N, xr.DataArray) else N.flatten()
 
     # Define the transformer from projection
-    transformer = pyproj.Transformer.from_proj(
-        pyproj.Proj(init="epsg:3395"),  # Source projection (Mercator)
-        pyproj.Proj(init="epsg:4326")   # Destination projection (WGS84 lat-lon)
+    transformer = pyproj.Transformer.from_crs(
+        pyproj.CRS.from_epsg(3395),  # Source projection (Mercator)
+        pyproj.CRS.from_epsg(4326)   # Destination projection (WGS84 lat-lon)
     )
 
     # Transform the coordinates
@@ -35,25 +35,37 @@ def regrid_to_regular_grid(var1, var2, target_lat, target_lon):
     
     return var1_interp, var2_interp
 
+def resample_dataset(ds1, ds2):
+    """
+    Resample ds2 to match the 'N' dimension of ds1.
+    """
+    target_N = ds1["N"]
+    ds2_resampled = ds2.interp(N=target_N)
+    return ds2_resampled
+
 def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm"):
     """This function plots Spearman's correlation between two variables after projecting them to lat-lon"""
     # Load datasets
     ds1 = xr.open_dataset(file1)
     ds2 = xr.open_dataset(file2)
     
+    # Resample ds2's N to match ds1's N (i.e., make the latitudes compatible)
+    if ds1["N"].shape != ds2["N"].shape:
+        print(f"Resampling ds2 to match ds1's N dimension...")
+        ds2_resampled = resample_dataset(ds1, ds2)
+        var2_resampled = ds2_resampled[var2_name]
+        print(f"Resampled ds2 N: {ds2_resampled['N'].shape}")
+    else:
+        var2_resampled = ds2[var2_name]
+        print("ds2's N dimension matches ds1's N dimension. No resampling required.")
+    
     # Extract variables from datasets
     var1 = ds1[var1_name]
-    var2 = ds2[var2_name]
     
     # Get E and N coordinates (the curvilinear grid)
     E1, N1 = ds1["E"], ds1["N"]
     E2, N2 = ds2["E"], ds2["N"]
     
-    # Resample ds2's N to match ds1's N (i.e., make the latitudes compatible)
-    target_N = ds1["N"]
-    ds2_resampled = ds2.interp(N=target_N)
-    var2_resampled = ds2_resampled[var2_name]
-
     # Project the curvilinear grids to lat-lon
     lon1, lat1 = project_curvilinear_to_latlon(E1, N1)
     lon2, lat2 = project_curvilinear_to_latlon(E2, N2)
