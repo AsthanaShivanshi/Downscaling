@@ -4,26 +4,42 @@ import pyproj
 import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
 
-def project_curvilinear_to_latlon(E, N, projection_str="EPSG:21781"):
+
+def project_curvilinear_to_latlon(E, N, projection_str="epsg:3395"):
     """Project curvilinear E, N coordinates to lat, lon using pyproj."""
-    # Flatten the input arrays for pyproj transformation
-    E_flat = E.values.flatten() if isinstance(E, xr.DataArray) else E.flatten()
-    N_flat = N.values.flatten() if isinstance(N, xr.DataArray) else N.flatten()
-
-    # Define the transformer from LV95 (EPSG:21781) to WGS84 (EPSG:4326)
-    transformer = pyproj.Transformer.from_crs(
-        "EPSG:21781",  # Source CRS (Swiss LV95)
-        "EPSG:4326",   # Destination CRS (WGS84 lat-lon)
-        always_xy=True  # Ensures proper order for Easting and Northing
+    
+    # Ensure E and N are numpy arrays
+    E = np.asarray(E)
+    N = np.asarray(N)
+    
+    # Flatten the input arrays
+    E_flat = E.flatten()
+    N_flat = N.flatten()
+    
+    # Handle NaNs: mask NaNs to avoid issues during transformation
+    mask = ~np.isnan(E_flat) & ~np.isnan(N_flat)
+    E_flat = E_flat[mask]
+    N_flat = N_flat[mask]
+    
+    # Define the transformer from projection
+    transformer = pyproj.Transformer.from_proj(
+        pyproj.Proj(init="epsg:3395"),  # Source projection (Mercator)
+        pyproj.Proj(init="epsg:4326")   # Destination projection (WGS84 lat-lon)
     )
-
+    
     # Transform the coordinates
     lon_flat, lat_flat = transformer.transform(E_flat, N_flat)
-
-    # Reshape back to original grid shape
-    lon = lon_flat.reshape(E.shape)
-    lat = lat_flat.reshape(N.shape)
-
+    
+    # Reshape back to the original grid shape
+    lon = np.full(E.shape, np.nan)
+    lat = np.full(N.shape, np.nan)
+    
+    lon_flat_idx = np.where(mask)[0]
+    lat_flat_idx = np.where(mask)[0]
+    
+    lon.flat[lon_flat_idx] = lon_flat
+    lat.flat[lat_flat_idx] = lat_flat
+    
     return lon, lat
 
 
