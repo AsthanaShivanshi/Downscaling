@@ -2,10 +2,11 @@ import numpy as np
 import xarray as xr
 import pyproj
 from scipy.stats import spearmanr
-import sys  # For handling command-line arguments
+import sys 
 
 
 def plot_spearman(file1, var1_name, file2, var2_name, output_file="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data_and_outputs/spearman.nc"):
+   
     """This function calculates and saves Spearman's correlation between two variables."""
     
     # Load datasets
