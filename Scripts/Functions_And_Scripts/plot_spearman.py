@@ -11,7 +11,7 @@ def project_curvilinear_to_latlon(E, N, projection_str="epsg:3395"):
     """
     # Define the pyproj transformer
     transformer = pyproj.Transformer.from_proj(
-        pyproj.Proj(init="epsg:3395"),  # Source: Oblique Mercator (assumed from CDO)
+        pyproj.Proj(init="epsg:3395"), 
         pyproj.Proj(init="epsg:4326")   # Destination: WGS84 lat-lon
     )
     
