@@ -1,8 +1,8 @@
 import numpy as np
 import xarray as xr
 import pyproj
-import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
+import sys  # For handling command-line arguments
 
 def project_curvilinear_to_latlon(E, N, projection_str="epsg:3395"):
     """Project curvilinear E, N coordinates to lat, lon using pyproj."""
@@ -43,8 +43,9 @@ def resample_dataset(ds1, ds2):
     ds2_resampled = ds2.interp(N=target_N)
     return ds2_resampled
 
-def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm"):
-    """This function plots Spearman's correlation between two variables after projecting them to lat-lon"""
+def plot_spearman(file1, var1_name, file2, var2_name, output_file="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data_and_outputs/spearman.nc"):
+    """This function calculates and saves Spearman's correlation between two variables."""
+    
     # Load datasets
     ds1 = xr.open_dataset(file1)
     ds2 = xr.open_dataset(file2)
@@ -91,21 +92,17 @@ def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm
                                    dask='allowed',
                                    output_dtypes=[np.float64])
     
-    # Plotting the result
-    plt.figure(figsize=(10, 6))
-    spearman_corr.plot(cmap=cmap, add_colorbar=True)
+    # Save the Spearman correlation to a NetCDF file
+    spearman_corr.to_netcdf(output_file)
+    print(f"Spearman correlation saved to {output_file}")
 
-    # Plot title and axis labels
-    plt.title(title if title else f"Spearman Correlation between {var1_name} and {var2_name}")
-    plt.xlabel("Longitude")
-    plt.ylabel("Latitude")
+if __name__ == "__main__":
+    # Get command-line arguments
+    file1 = sys.argv[1]
+    var1_name = sys.argv[2]
+    file2 = sys.argv[3]
+    var2_name = sys.argv[4]
+    output_file = sys.argv[5] if len(sys.argv) > 5 else "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data_and_outputs/spearman.nc"
     
-    # Optional: Convert ticks to km if projected coordinates (assuming x and y are in meters)
-    if all(k in ['x', 'y'] for k in [target_lon.name.lower(), target_lat.name.lower()]):
-        ax = plt.gca()
-        ax.set_xticklabels([f"{x/1000:.0f}" for x in ax.get_xticks()])
-        ax.set_yticklabels([f"{y/1000:.0f}" for y in ax.get_yticks()])
-
-    # Show plot
-    plt.tight_layout()
-    plt.show()
+    # Call the plot_spearman function
+    plot_spearman(file1, var1_name, file2, var2_name, output_file)
