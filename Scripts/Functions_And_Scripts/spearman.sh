@@ -8,4 +8,4 @@ var2_name="RhiresD"
 output_file="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data_and_outputs/spearman.nc"
 
 # Run the Python script with the specified arguments
-python3 plot_spearman.py $file1 $var1_name $file2 $var2_name $output_file
+python3 /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Scripts/Functions_And_Scripts/plot_spearman.py $file1 $var1_name $file2 $var2_name $output_file
