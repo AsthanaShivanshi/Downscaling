@@ -4,16 +4,17 @@ import pyproj
 import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
 
-def project_curvilinear_to_latlon(E, N, projection_str="epsg:3395"):
+def project_curvilinear_to_latlon(E, N, projection_str="EPSG:21781"):
     """Project curvilinear E, N coordinates to lat, lon using pyproj."""
-    # Flatten the input arrays
+    # Flatten the input arrays for pyproj transformation
     E_flat = E.values.flatten() if isinstance(E, xr.DataArray) else E.flatten()
     N_flat = N.values.flatten() if isinstance(N, xr.DataArray) else N.flatten()
 
-    # Define the transformer from projection
-    transformer = pyproj.Transformer.from_proj(
-        pyproj.Proj(init="epsg:3395"),  # Source projection (Mercator)
-        pyproj.Proj(init="epsg:4326")   # Destination projection (WGS84 lat-lon)
+    # Define the transformer from LV95 (EPSG:21781) to WGS84 (EPSG:4326)
+    transformer = pyproj.Transformer.from_crs(
+        "EPSG:21781",  # Source CRS (Swiss LV95)
+        "EPSG:4326",   # Destination CRS (WGS84 lat-lon)
+        always_xy=True  # Ensures proper order for Easting and Northing
     )
 
     # Transform the coordinates
@@ -39,6 +40,7 @@ def regrid_to_regular_grid(var1, var2, target_lat, target_lon):
 
 def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm"):
     """This function plots Spearman's correlation between two variables after projecting them to lat-lon"""
+    
     # Load datasets
     ds1 = xr.open_dataset(file1)
     ds2 = xr.open_dataset(file2)
@@ -70,6 +72,7 @@ def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm
         else:
             return np.nan
 
+    # Apply Spearman's correlation to each time step
     spearman_corr = xr.apply_ufunc(spearman, var1_interp, var2_interp,
                                    input_core_dims=[['time'], ['time']],
                                    vectorize=True,
@@ -94,4 +97,3 @@ def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm
     # Show plot
     plt.tight_layout()
     plt.show()
-
