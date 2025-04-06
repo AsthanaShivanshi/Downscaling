@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH --mem=16G  # Request 16 GB of memory
 
 # Activate the specific Python environment
 source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
