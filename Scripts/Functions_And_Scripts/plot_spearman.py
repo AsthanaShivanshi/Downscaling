@@ -4,14 +4,13 @@ from scipy.stats import spearmanr
 import matplotlib.pyplot as plt
 from scipy.stats import kstest
 import pandas as pd
-import numpy as np
 
-def plot_spearman(file1, var1, file2, var2, title=None, cmap="coolwarm"):
+def plot_spearman(file1, var1_name, file2, var2_name, title=None, cmap="coolwarm"):
     """This is a function written to plot Spearman correlation between two input files where:
     file1: input file1, e.g. TabsD for average daily temperature data
     file2: input file2, e.g. RhyresD for daily precipitation sum data
-    var1: variable extracted from file1
-    var2: variable extracted from file2
+    var1_name: string with variable name in file1
+    var2_name: string with variable name in file2
     title: title of the plot
     cmap: colormap for the plot
     """
@@ -20,8 +19,8 @@ def plot_spearman(file1, var1, file2, var2, title=None, cmap="coolwarm"):
     ds2 = xr.open_dataset(file2)
 
     # Variables extraction from two files
-    var1 = ds1[var1]
-    var2 = ds2[var2]
+    var1 = ds1[var1_name]
+    var2 = ds2[var2_name]
 
     # Taking care of grid issues in case var1 and var2 don't lie on the same grid
     # Regridding var2 to the grid of var1 (might not be needed)
@@ -64,7 +63,7 @@ def plot_spearman(file1, var1, file2, var2, title=None, cmap="coolwarm"):
     y_coord = possible_y[0] if possible_y else list(coords)[-2]
 
     # Set plot title and labels
-    plt.title(title if title else f"Spearman Correlation between {var1.name} and {var2.name}")
+    plt.title(title if title else f"Spearman Correlation between {var1_name} and {var2_name}")
     plt.xlabel(f"{x_coord} ({'km' if 'x' in x_coord.lower() else 'degrees'})")
     plt.ylabel(f"{y_coord} ({'km' if 'y' in y_coord.lower() else 'degrees'})")
 
