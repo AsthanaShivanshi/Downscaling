@@ -59,7 +59,7 @@ def plot_spearman(file1, var1_name, file2, var2_name, output_file):
     ax.coastlines()
     ax.gridlines(draw_labels=True)
 
-    # Add colorbar
+#Colorbar
     cbar = fig.colorbar(corr_plot, ax=ax, orientation="vertical", shrink=0.8)
     cbar.set_label("Spearman Correlation")
 
