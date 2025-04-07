@@ -9,8 +9,8 @@ def plot_spearman(file1, var1_name, file2, var2_name, output_file):
     """This function calculates and plots Spearman's correlation between two variables after converting Swiss projection to WGS84."""
     
     # Load datasets
-    ds1 = xr.open_dataset(file1)
-    ds2 = xr.open_dataset(file2)
+    ds1 = xr.open_mfdataset(file1, parallel=True)
+    ds2 = xr.open_mfdataset(file2, parallel=True)
     
     # Extract the variables from the datasets
     var1 = ds1[var1_name]
