@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1              # Number of tasks (typically 1 for single-node jobs)
 #SBATCH --cpus-per-task=4      # Number of CPUs per task (adjust as needed)
 #SBATCH --time=02:00:00         # Time limit (format: HH:MM:SS)
-#SBATCH --mem=32G                # Memory required (adjust as needed)
+#SBATCH --mem=64G                # Memory required (adjust as needed)
 
 cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Scripts/Functions_And_Scripts/
 
