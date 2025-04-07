@@ -1,5 +1,3 @@
-# plot_spearman.py
-
 import numpy as np
 import xarray as xr
 from scipy.stats import spearmanr
@@ -38,8 +36,8 @@ def plot_spearman(file1, var1_name, file2, var2_name):
                                    output_dtypes=[np.float64])
 
     # Extract coordinate arrays for grid transformation
-    x_coords = ds1.x.values  # Swiss projection X coordinate
-    y_coords = ds1.y.values  # Swiss projection Y coordinate
+    lon_coords = ds1.lon.values  # Longitude coordinates
+    lat_coords = ds1.lat.values  # Latitude coordinates
 
     # Set up the projection: Swiss projection (EPSG:21781) to WGS84 (EPSG:4326)
     swiss_proj = pyproj.CRS("EPSG:21781")
@@ -47,7 +45,7 @@ def plot_spearman(file1, var1_name, file2, var2_name):
     transformer = pyproj.Transformer.from_crs(swiss_proj, wgs84_proj, always_xy=True)
     
     # Convert grid coordinates from Swiss to WGS84
-    lon, lat = transformer.transform(x_coords, y_coords)
+    lon, lat = transformer.transform(lon_coords, lat_coords)
     
     # Create a meshgrid for plotting
     lon_grid, lat_grid = np.meshgrid(lon, lat)
