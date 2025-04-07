@@ -5,7 +5,7 @@ import pyproj
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
-def plot_spearman(file1, var1_name, file2, var2_name):
+def plot_spearman(file1, var1_name, file2, var2_name, output_file):
     """This function calculates and plots Spearman's correlation between two variables after converting Swiss projection to WGS84."""
     
     # Load datasets
@@ -64,4 +64,17 @@ def plot_spearman(file1, var1_name, file2, var2_name):
     cbar.set_label("Spearman Correlation")
 
     plt.title(f"Spearman Correlation between {var1_name} and {var2_name}")
-    plt.show()
+    
+    # Save the plot to the specified output file
+    plt.savefig(output_file, bbox_inches='tight', dpi=300)
+    plt.close()
+
+if __name__ == "__main__":
+    # Example call to plot the correlation and save as PNG
+    file1 = "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data_and_outputs/TabsD_1961_2023.nc"
+    var1_name = "TabsD"
+    file2 = "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data_and_outputs/RhiresD.nc"
+    var2_name = "RhiresD"
+    output_file = "spearman_correlation.png"  # Output file name
+
+    plot_spearman(file1, var1_name, file2, var2_name, output_file)
