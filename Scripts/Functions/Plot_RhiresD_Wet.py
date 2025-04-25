@@ -8,6 +8,7 @@ def plot_rhiresd_wet(rhiresd_wet, alpha_mle, beta_mle, city_name="City", season_
     """
     Plots histogram, QQ plot, and Empirical vs Parametric CDF for rhiresd_wet for the pixel specified using fitted gamma distribution.
     """
+    rhiresd_wet = np.ravel(rhiresd_wet)
 
     # Histogram + parameteric Gamma PDF
     plt.figure(figsize=(10, 6))
