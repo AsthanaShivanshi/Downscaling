@@ -20,10 +20,8 @@ def gridded_RMSE(pred_path, truth_path, var1, var2, chunk_size={'time': 100}):
     diff_squared = (var1_data - var2_data) ** 2
     diff_squared = diff_squared.where(valid_mask)
     
-    # Mean Squared Error
     mse = diff_squared.sum(dim='time') / valid_mask.sum(dim='time')
     
-    # Root Mean Squared Error
     rmse = np.sqrt(mse)
     
     # Ensure the output is float32
