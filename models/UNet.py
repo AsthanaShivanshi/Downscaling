@@ -31,18 +31,19 @@ class Encoder_Block(nn.Module): #Encoder block for downsampling spatial dimensio
         return x, p #Output of the encoder block is the output of the conv layer and the pooled output
     
 
-class Decoder_Block(nn.Module): #Does the oppositr of the encvoder block, upsamplimg of spatial dimensions
+class Decoder_Block(nn.Module): # Decoder might lead to spatial dimension mismatch, so we need 
     def __init__(self, in_channels, out_channels):
         super(Decoder_Block, self).__init__()
-        self.up = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2) #Devconvolution , doubling of spatial dimensions
-        self.conv=DoubleConv(out_channels*2, out_channels)
+        self.up = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2)
+        self.conv = DoubleConv(out_channels * 2, out_channels)
 
-    def forward(self, inputs, skip): #   Decoder Block= Upsample(ConvTranspose) + Merge skips +Double Convb
+    def forward(self, inputs, skip):
         x = self.up(inputs)
+        if x.shape[2:] != skip.shape[2:]:
+            x = torch.nn.functional.interpolate(x, size=skip.shape[2:], mode='bicubic', align_corners=False)
         x = torch.cat([x, skip], dim=1)
         x = self.conv(x)
         return x
-
 
 #xxxxxxxxxxxxxxxxxxxxxxxxUNet architecturexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 class UNet(nn.Module):
