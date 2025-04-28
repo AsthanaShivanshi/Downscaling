@@ -32,7 +32,7 @@ class Encoder_Block(nn.Module): #Encoder block for downsampling spatial dimensio
         return x, p #Output of the encoder block is the output of the conv layer and the pooled output
     
 
-class Decoder_Block(nn.Module): # Decoder might lead to spatial dimension mismatch, so we need 
+class Decoder_Block(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(Decoder_Block, self).__init__()
         self.up = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2)
@@ -40,14 +40,11 @@ class Decoder_Block(nn.Module): # Decoder might lead to spatial dimension mismat
 
     def forward(self, inputs, skip):
         x = self.up(inputs)
-        
         if x.shape[2:] != skip.shape[2:]:
-            skip = torch.nn.functional.interpolate(skip, size=x.shape[2:], mode='bilinear', align_corners=False)
-
+            x = torch.nn.functional.interpolate(x, size=skip.shape[2:], mode='bilinear', align_corners=False)
         x = torch.cat([x, skip], dim=1)
         x = self.conv(x)
         return x
-
 
 #xxxxxxxxxxxxxxxxxxxxxxxxUNet architecturexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 class UNet(nn.Module):
