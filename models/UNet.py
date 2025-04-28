@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn #Neural network module
 
+#################################Unet building blocks#####################################
 class DoubleConv(nn.Module): #2 convolutional layers, batchnorm and ReLU
     def __init__(self, in_channels, out_channels): #Two convolutional layers stacked together 
         super(DoubleConv, self).__init__()
