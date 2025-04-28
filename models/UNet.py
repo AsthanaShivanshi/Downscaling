@@ -91,8 +91,13 @@ class UNet(nn.Module):
         d4= self.Decoder4(d3, s1)
 
         outputs= self.outputs(d4) #Final output
-        return outputs
+
+        #Due to the nature of U net architecture, the output might not match exactly the target grid, 
+        if outputs.shape[2:] != inputs.shape[2:]:
+            outputs = torch.nn.functional.interpolate(outputs, size=inputs.shape[2:], mode='bilinear', align_corners=False)
     
+        return outputs
+
     def last_layer(self):
         return self.outputs
 
