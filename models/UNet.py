@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn #Neural network module based on https://github.com/DSIP-FBK/DiffScaler/blob/main/src/models/components/unet.py
+import torch.nn.functional as F
 
 #################################Unet building blocks#####################################
 class DoubleConv(nn.Module): #2 convolutional layers, batchnorm and ReLU
@@ -39,11 +40,14 @@ class Decoder_Block(nn.Module): # Decoder might lead to spatial dimension mismat
 
     def forward(self, inputs, skip):
         x = self.up(inputs)
+        
         if x.shape[2:] != skip.shape[2:]:
-            x = torch.nn.functional.interpolate(x, size=skip.shape[2:], mode='bicubic', align_corners=False)
+            skip = torch.nn.functional.interpolate(skip, size=x.shape[2:], mode='bilinear', align_corners=False)
+
         x = torch.cat([x, skip], dim=1)
         x = self.conv(x)
         return x
+
 
 #xxxxxxxxxxxxxxxxxxxxxxxxUNet architecturexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 class UNet(nn.Module):
