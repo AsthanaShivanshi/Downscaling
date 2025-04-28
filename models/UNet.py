@@ -1,5 +1,5 @@
 import torch
-import torch.nn as nn #Neural network module
+import torch.nn as nn #Neural network module based on https://github.com/DSIP-FBK/DiffScaler/blob/main/src/models/components/unet.py
 
 #################################Unet building blocks#####################################
 class DoubleConv(nn.Module): #2 convolutional layers, batchnorm and ReLU
