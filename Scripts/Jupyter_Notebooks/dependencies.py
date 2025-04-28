@@ -24,6 +24,8 @@ import geopandas as gpd
 from pyproj import Transformer
 from statsmodels.distributions.empirical_distribution import ECDF
 from scipy.stats import multivariate_normal
+import torch
+import torch.nn as nn
 
 __all__ = [
     'np', 'xr', 'pyproj', 'stats', 'spearmanr', 'linregress', 'norm', 'gamma',
