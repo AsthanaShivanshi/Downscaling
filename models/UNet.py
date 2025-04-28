@@ -72,7 +72,7 @@ class UNet(nn.Module):
 
         self.outputs= nn.Conv2d(features[0], out_channels, kernel_size=1)
 
-    def forward(self,inputs):
+    def forward(self,inputs, targets=None):
 
         ###Encoder###
         s1,p1= self.Encoder1(inputs)
@@ -93,13 +93,11 @@ class UNet(nn.Module):
         outputs= self.outputs(d4) #Final output
 
         #Due to the nature of U net architecture, the output might not match exactly the target grid, 
-        if outputs.shape[2:] != inputs.shape[2:]:
-            outputs = torch.nn.functional.interpolate(outputs, size=inputs.shape[2:], mode='bilinear', align_corners=False)
+        if targets is not None and outputs.shape[2:] != targets.shape[2:]:
+            outputs = torch.nn.functional.interpolate(outputs, size=targets.shape[2:], mode='bilinear', align_corners=False)
     
         return outputs
 
-    def last_layer(self):
-        return self.outputs
 
 
 
