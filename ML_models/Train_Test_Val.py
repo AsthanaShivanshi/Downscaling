@@ -20,7 +20,7 @@ def split_by_decade(times, seed=42, train_frac=0.7, val_frac=0.2):
         n_total = len(indices)
         n_train = int(train_frac * n_total)
         n_val = int(val_frac * n_total)
-        n_test = n_total - n_train - n_val
+        n_test = n_total - n_train - n_val #Everything else is used for testing the model. Should I change to everything else used for training? SHALL SEE . UNDECIDED NOW
 
         train_indices.append(indices[:n_train])
         val_indices.append(indices[n_train:n_train + n_val])
