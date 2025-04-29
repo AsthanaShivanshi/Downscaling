@@ -10,6 +10,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data import Subset
 from Train_Test_Val import split_by_decade
 from config import CONFIG #configuration file with the paths and variable names
+from Train import checkpoint_save
 
 def main(quick_test=False):
     paths = CONFIG["input_paths"]
@@ -54,13 +55,10 @@ def main(quick_test=False):
     # Run training
     model, history, final_val_loss = run_experiment(train_dataset, val_dataset, quick_test=quick_test, num_epochs=50)
 
-    # Optionally save model
-    checkpoint_save(model, optimizer, epoch=num_epochs, loss=final_val_loss, path='/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Trained_Models/model.pth')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Train UNet model for downscaling.")
+    parser.add_argument("--quick_test", action="store_true", help="Run a quick test with limited data.")
+    args = parser.parse_args()
 
-    if __name__ == "__main__":
-        parser = argparse.ArgumentParser(description="Train UNet model for downscaling.")
-        parser.add_argument("--quick_test", action="store_true", help="Run a quick test with limited data.")
-        args = parser.parse_args()
-
-        main(quick_test=args.quick_test)
+    main(quick_test=args.quick_test)
 
