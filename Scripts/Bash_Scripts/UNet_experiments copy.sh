@@ -8,6 +8,8 @@
 #SBATCH --mem=32G                # Memory required (adjust as needed)
 
 #My environment activation
+module purge
+module load python
 
 source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
 
@@ -15,4 +17,10 @@ source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bi
 
 cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models
 
-python Main.py
+
+#For quick test module
+python Main.py --quick_test
+
+#For full training modzle
+
+python Main.py 
