@@ -23,4 +23,4 @@ python Main.py --quick_test
 
 #For full training modzle
 
-python Main.py 
+#python Main.py 
