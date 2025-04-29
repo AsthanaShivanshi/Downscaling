@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=UNet_training       # Name of the job
-#SBATCH --output=job_output-%j.txt # Standard output file
-#SBATCH --error=job_error-%j.txt   # Standard error file
-#SBATCH --ntasks=1              # Number of tasks (typically 1 for single-node jobs)
-#SBATCH --cpus-per-task=4      # Number of CPUs per task (adjust as needed)
-#SBATCH --time=02:00:00         # Time limit (format: HH:MM:SS)
-#SBATCH --mem=32G                # Memory required (adjust as needed)
+#SBATCH --job-name=UNet_training       
+#SBATCH --output=job_output-%j.txt 
+#SBATCH --error=job_error-%j.txt  
+#SBATCH --ntasks=1             
+#SBATCH --cpus-per-task=4     
+#SBATCH --time=02:00:00         
+#SBATCH --mem=32G                
 
 #My environment activation
 module purge
