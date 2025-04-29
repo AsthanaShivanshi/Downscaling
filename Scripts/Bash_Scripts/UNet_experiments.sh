@@ -18,8 +18,8 @@ cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML
 
 
 #For quick test module
-python Main.py --quick_test
+#python Main.py --quick_test
 
 #For full training modzle
 
-#python Main.py 
+python Main.py 
