@@ -11,7 +11,7 @@ from torch.utils.data import Subset
 from Train_Test_Val import split_by_decade
 from config import CONFIG #configuration file with the paths and variable names
 
-def main():
+def main(quick_test=False):
     paths = CONFIG["input_paths"]
     var_names = CONFIG["var_names"]
 
@@ -43,13 +43,24 @@ def main():
     val_dataset = PairedDataset(precip_val, temp_val)
     test_dataset = PairedDataset(precip_test, temp_test)
 
+
     # Create dataloaders
     train_loader = DataLoader(train_dataset, batch_size=CONFIG["batch_size"], shuffle=True, num_workers=CONFIG["num_workers"])
     val_loader = DataLoader(val_dataset, batch_size=CONFIG["batch_size"], shuffle=False, num_workers=CONFIG["num_workers"])
     test_loader = DataLoader(test_dataset, batch_size=CONFIG["batch_size"], shuffle=False, num_workers=CONFIG["num_workers"])
 
-    print(f"Train batches: {len(train_loader)}, Val: {len(val_loader)}, Test: {len(test_loader)}")
+    print(f"Train samples: {len(train_dataset)}, Val: {len(val_dataset)}, Test: {len(test_dataset)}")
 
-    
-if __name__ == "__main__":
-    main()
+    # Run training
+    model, history, final_val_loss = run_experiment(train_dataset, val_dataset, quick_test=quick_test, num_epochs=50)
+
+    # Optionally save model
+    # checkpoint_save(model, optimizer, epoch=num_epochs, loss=final_val_loss, path='path/to/save/model.pth')
+
+    if __name__ == "__main__":
+        parser = argparse.ArgumentParser(description="Train UNet model for downscaling.")
+        parser.add_argument("--quick_test", action="store_true", help="Run a quick test with limited data.")
+        args = parser.parse_args()
+
+        main(quick_test=args.quick_test)
+
