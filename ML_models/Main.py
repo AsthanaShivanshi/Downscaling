@@ -55,7 +55,7 @@ def main(quick_test=False):
     model, history, final_val_loss = run_experiment(train_dataset, val_dataset, quick_test=quick_test, num_epochs=50)
 
     # Optionally save model
-    # checkpoint_save(model, optimizer, epoch=num_epochs, loss=final_val_loss, path='path/to/save/model.pth')
+    checkpoint_save(model, optimizer, epoch=num_epochs, loss=final_val_loss, path='/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Trained_Models/model.pth')
 
     if __name__ == "__main__":
         parser = argparse.ArgumentParser(description="Train UNet model for downscaling.")
