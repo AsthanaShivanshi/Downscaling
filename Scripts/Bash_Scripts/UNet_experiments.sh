@@ -8,7 +8,6 @@
 #SBATCH --mem=32G                
 
 #My environment activation
-module purge
 module load python
 
 source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
