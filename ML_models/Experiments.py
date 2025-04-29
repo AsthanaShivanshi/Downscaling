@@ -3,9 +3,10 @@ sys.path.append("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/
 from UNet import UNet
 import torch
 import torch.nn as nn
-from train import train_model
+from Train import train_model
+from Train import checkpoint_save
 
-def run_experiment(train_dataset, val_dataset, quick_test=True):
+def run_experiment(train_dataset, val_dataset, quick_test=True, num_epochs=50):
     model = UNet(in_channels=2, out_channels=2)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     criterion = nn.MSELoss()
@@ -23,7 +24,6 @@ def run_experiment(train_dataset, val_dataset, quick_test=True):
     else:
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
         val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=32, shuffle=False)
-        num_epochs = 50
 
     trained_model, history = train_model(
         model,
@@ -35,4 +35,8 @@ def run_experiment(train_dataset, val_dataset, quick_test=True):
         quick_test=quick_test
     )
 
-    return trained_model, history
+    #### Saving the model is optional
+    final_val_loss= history['val_loss'][-1]
+    #Optional usage of checkpoint_save function from Train.py
+    #checkpoint_save(model, optimizer, final_val_loss, epoch=num_epochs, loss= final_val_loss, path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Trained_Models/model_checkpoint.pth")
+    return trained_model, history, final_val_loss
