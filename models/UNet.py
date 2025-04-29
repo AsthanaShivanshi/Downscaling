@@ -1,5 +1,11 @@
 import torch
-import torch.nn as nn #Neural network module based on https://github.com/DSIP-FBK/DiffScaler/blob/main/src/models/components/unet.py
+import torch.nn as nn #Neural network module based on 
+#https://github.com/DSIP-FBK/DiffScaler/blob/main/src/models/components/unet.py hierarchy of models. First one is a UNet I have customised it to my requirements here. 
+
+#Please note that to make use of this architecture, you need to pad the input first so that the layers can be used as is (multiples of 16) 
+#At the end, we have to not forget to crop the output back to the original size (265x370).
+
+
 import torch.nn.functional as F
 
 #################################Unet building blocks#####################################
@@ -70,6 +76,18 @@ class UNet(nn.Module):
         self.outputs= nn.Conv2d(features[0], out_channels, kernel_size=1)
 
     def forward(self,inputs, targets=None):
+        #Original size has to be stored
+        original_height=inputs.shape[2]
+        original_width=inputs.shape[3]
+
+        #Padding to make sure the input is a multiple of 16
+        padding_height= (16 - original_height % 16) % 16
+        padding_width= (16 - original_width % 16) % 16
+
+        inputs= F.pad(inputs, (0, padding_width, 0, padding_height))
+
+
+
 
         ###Encoder###
         s1,p1= self.Encoder1(inputs)
@@ -87,9 +105,14 @@ class UNet(nn.Module):
         d3= self.Decoder3(d2, s2)
         d4= self.Decoder4(d3, s1)
 
-        outputs= self.outputs(d4) #Final output
+        outputs= self.outputs(d4) 
 
-        #Due to the nature of U net architecture, the output might not match exactly the target grid, 
+        #This output has to be cropped back to the original size due to the padding introduced earlier
+
+        outputs= outputs[ :, :, :original_height, :original_width] #Crop the output to the original size
+        #Covering all bases in case there is still a mismatch for some odd reason I cant figure out
+        #Due to the nature of U net architecture, the output might not match exactly the target grid
+        #This is a safety check
         if targets is not None and outputs.shape[2:] != targets.shape[2:]:
             outputs = torch.nn.functional.interpolate(outputs, size=targets.shape[2:], mode='bilinear', align_corners=False)
     
