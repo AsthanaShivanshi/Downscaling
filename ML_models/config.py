@@ -1,5 +1,5 @@
 CONFIG = {
-    "batch_size": 16,
+    "batch_size": 32,
     "num_workers": 4,
     "input_paths": {
         "precip_input": "path/to/RhiresD_1km_bicubic_Swiss_features_masked.nc",
