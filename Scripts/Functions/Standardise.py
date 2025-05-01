@@ -29,7 +29,7 @@ def min_max_scaler(var, min, max):
 #Using all the previously written functions to standardise any dataset depending on the variables it has 
 
 def standardise(input_path, output_path, var):
-    ds= xr.open_dataset(input_path)
+    ds= xr.open_dataset(input_path,chunks={"time":100})
 
     if var in ["pr", "RhiresD"]: #More variables can be added depending on the dataset specifications
         min, max= min_max_calculator(ds, var)
