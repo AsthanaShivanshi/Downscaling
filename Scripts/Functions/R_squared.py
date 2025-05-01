@@ -25,10 +25,9 @@ def gridded_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 50}
     return r2
 
 
-def pooled_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 50}):
+def pooled_R_squared(pred_path, truth_path, var1, var2, chunk_size=None):
     """
-    Calculate a single pooled coefficient of determination (R^2) between two gridded variables,
-    pooling across all dimensions, ignoring NaNs.
+    Calculate a single pooled R^2 between two variables, pooling across all dimensions.
     """
     import xarray as xr
     import numpy as np
@@ -36,14 +35,14 @@ def pooled_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 50})
     ds_pred = xr.open_dataset(pred_path, chunks=chunk_size)
     ds_true = xr.open_dataset(truth_path, chunks=chunk_size)
 
-    var1_data, var2_data = xr.align(ds_pred[var1], ds_true[var2])
+    var1_data, var2_data = xr.align(ds_pred[var1], ds_true[var2], join="override")
 
-    # Automatically get all dimension names
-    dims = list(var1_data.dims)
+    print("var1_data.dims:", var1_data.dims)
+    print("var2_data.dims:", var2_data.dims)
 
-    # Stack all dimensions into a single 'points' dimension
-    var1_flat = var1_data.stack(points=dims)
-    var2_flat = var2_data.stack(points=dims)
+    # Here you correctly stack over (N, E)
+    var1_flat = var1_data.stack(points=("N", "E"))
+    var2_flat = var2_data.stack(points=("N", "E"))
 
     valid_mask = (~np.isnan(var1_flat)) & (~np.isnan(var2_flat))
 
@@ -58,5 +57,6 @@ def pooled_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 50})
     r2 = 1 - (ss_res / ss_tot)
 
     return np.float32(r2)
+
 
 
