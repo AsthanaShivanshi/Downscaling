@@ -24,30 +24,39 @@ def gridded_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 50}
     
     return r2
 
+
 def pooled_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 50}):
     """
     Calculate a single pooled coefficient of determination (R^2) between two gridded variables,
-    pooling across all spatial and temporal dimensions, ignoring NaNs.
+    pooling across all dimensions, ignoring NaNs.
     """
+    import xarray as xr
+    import numpy as np
+
     ds_pred = xr.open_dataset(pred_path, chunks=chunk_size)
     ds_true = xr.open_dataset(truth_path, chunks=chunk_size)
-    
+
     var1_data, var2_data = xr.align(ds_pred[var1], ds_true[var2])
-    
-    var1_flat = var1_data.stack(points=('time', 'lat', 'lon'))
-    var2_flat = var2_data.stack(points=('time', 'lat', 'lon'))
-    
+
+    # Automatically get all dimension names
+    dims = list(var1_data.dims)
+
+    # Stack all dimensions into a single 'points' dimension
+    var1_flat = var1_data.stack(points=dims)
+    var2_flat = var2_data.stack(points=dims)
+
     valid_mask = (~np.isnan(var1_flat)) & (~np.isnan(var2_flat))
-    
+
     var1_valid = var1_flat.where(valid_mask, drop=True)
     var2_valid = var2_flat.where(valid_mask, drop=True)
-    
+
     ss_res = ((var1_valid - var2_valid) ** 2).sum().item()
-    
+
     mean_true = var2_valid.mean()
     ss_tot = ((var2_valid - mean_true) ** 2).sum().item()
-    
+
     r2 = 1 - (ss_res / ss_tot)
-    
+
     return np.float32(r2)
+
 
