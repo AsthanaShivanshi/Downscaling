@@ -3,10 +3,9 @@ from torch.utils.data import Dataset
 import numpy as np
 
 class DownscalingDataset(Dataset):
-    def __init__(self, input_ds, target_ds, var_name_inputs, var_name_targets, transform=None):
+    def __init__(self, input_ds, target_ds, var_name_inputs, var_name_targets):
         self.input = input_ds[var_name_inputs]
         self.target = target_ds[var_name_targets]
-        self.transform = transform
 
     def __len__(self):
         return len(self.input.time)
