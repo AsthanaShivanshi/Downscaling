@@ -27,3 +27,5 @@ def split_by_decade(times, seed=42, train_frac=0.7, val_frac=0.2):
         test_indices.append(indices[n_train + n_val:])
 
     return torch.cat(train_indices), torch.cat(val_indices), torch.cat(test_indices)
+
+#From our dataset Train samples: 13293, Val: 3796, Test: 1904
