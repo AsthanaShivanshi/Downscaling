@@ -26,22 +26,29 @@ def normalise(var, mean, std):
 def min_max_scaler(var, min, max):
     return (var-min)/(max-min)
 
-#Using all the previously written functions to standardise any dataset depending on the variables it has 
 
-def standardise(input_path, output_path, var):
-    ds= xr.open_dataset(input_path,chunks={"time":100})
+def standardise(input_path, output_path, var, mean=None, std=None, min=None, max=None):
+    ds = xr.open_dataset(input_path, chunks={"time": 100})
+    
+    if var in ["pr", "RhiresD"]: 
+        if min is None or max is None:
+            min, max = min_max_calculator(ds, var)
+        scaled_var = min_max_scaler(ds[var], min, max)
 
-    if var in ["pr", "RhiresD"]: #More variables can be added depending on the dataset specifications
-        min, max= min_max_calculator(ds, var)
-        scaled_var= min_max_scaler(ds[var],min, max)
-
-    elif var in ["tas", "TabsD"]:
-        mean, std= norm_params(ds, var)
-        scaled_var= normalise(ds[var], mean,std)
+    elif var in ["tas", "TabsD"]: 
+        if mean is None or std is None:
+            mean, std = norm_params(ds, var)
+        scaled_var = normalise(ds[var], mean, std)
     
     else:
-        print("Unknown variable type or name. Please check and make edits in the fucntion as required")
+        raise ValueError("Unknown name of the variable.")
     
-    scaled_ds= scaled_var.to_dataset(name=var)
+    scaled_ds = scaled_var.to_dataset(name=var)
     scaled_ds.to_netcdf(output_path)
-    print(f"Normalised/min max scaled variable saved to {output_path}")
+    print(f"Normalised/scaled variable saved to {output_path}")
+    
+    if var in ["pr", "RhiresD"]:
+        return min, max
+    else:
+        return mean, std
+
