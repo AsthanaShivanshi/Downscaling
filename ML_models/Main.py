@@ -12,7 +12,7 @@ def load_dataset(input_path, target_path, input_var, target_var):
     target_ds = xr.open_dataset(target_path)
     return DownscalingDataset(input_ds, target_ds, input_var, target_var)
 
-def main(quick_test=False):
+def main(quick_test=True):
     paths = CONFIG["input_paths"]
     var_names = CONFIG["var_names"]
 
