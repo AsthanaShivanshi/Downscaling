@@ -11,4 +11,4 @@
 # Ignore directories
 data/
 results/
-
+checkpoints/
