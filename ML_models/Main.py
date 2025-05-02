@@ -2,6 +2,7 @@ import argparse  # To enable running the script from the command line
 import torch
 from torch.utils.data import DataLoader
 import xarray as xr
+import os
 
 from Experiments import run_experiment
 from Downscaling_Dataset_Prep import DownscalingDataset, PairedDataset

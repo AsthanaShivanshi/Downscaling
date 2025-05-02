@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 from Train import train_model
 from Train import checkpoint_save
+import os
 
 def run_experiment(train_dataset, val_dataset, quick_test=True, num_epochs=50):
     model = UNet(in_channels=2, out_channels=2)

@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm 
+import os
 
 def train_one_epoch(model, dataloader, optimizer, criterion,quick_test=True):
     model.train()
