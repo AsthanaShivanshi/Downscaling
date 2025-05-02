@@ -23,8 +23,8 @@ def run_experiment(train_dataset, val_dataset, quick_test=False, num_epochs=30):
         )
         num_epochs = 10
     else:
-        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True)
-        val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=16, shuffle=False)
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
+        val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=32, shuffle=False)
 
     trained_model, history = train_model(
         model,
