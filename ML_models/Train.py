@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm 
 import os
 
-def train_one_epoch(model, dataloader, optimizer, criterion,quick_test=True):
+def train_one_epoch(model, dataloader, optimizer, criterion, quick_test=False):
     model.train()
     running_loss = 0.0
 
@@ -23,7 +23,7 @@ def train_one_epoch(model, dataloader, optimizer, criterion,quick_test=True):
     return running_loss / (i + 1)
 
 
-def validate(model, dataloader, criterion, quick_test=True):
+def validate(model, dataloader, criterion, quick_test=False):
     model.eval()
     running_loss = 0.0
 
@@ -42,7 +42,7 @@ def validate(model, dataloader, criterion, quick_test=True):
 def train_model(
     model, train_loader, val_loader,
     optimizer, criterion,
-    num_epochs=50,
+    num_epochs=30,
     quick_test=False
 ):
     history = {"train_loss": [], "val_loss": []}

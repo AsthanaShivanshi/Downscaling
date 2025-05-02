@@ -7,7 +7,7 @@ from Train import train_model
 from Train import checkpoint_save
 import os
 
-def run_experiment(train_dataset, val_dataset, quick_test=True, num_epochs=50):
+def run_experiment(train_dataset, val_dataset, quick_test=False, num_epochs=30):
     model = UNet(in_channels=2, out_channels=2)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     criterion = nn.MSELoss()
@@ -15,16 +15,16 @@ def run_experiment(train_dataset, val_dataset, quick_test=True, num_epochs=50):
     if quick_test:
         train_loader = torch.utils.data.DataLoader(
             torch.utils.data.Subset(train_dataset, range(100)),
-            batch_size=32, shuffle=True
+            batch_size=16, shuffle=True
         )
         val_loader = torch.utils.data.DataLoader(
             torch.utils.data.Subset(val_dataset, range(50)),
-            batch_size=32, shuffle=False
+            batch_size=16, shuffle=False
         )
         num_epochs = 10
     else:
-        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
-        val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=32, shuffle=False)
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True)
+        val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=16, shuffle=False)
 
     trained_model, history = train_model(
         model,
