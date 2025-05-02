@@ -14,6 +14,8 @@ class DownscalingDataset(Dataset):
         input_img = self.input.isel(time=index).values
         target_img = self.target.isel(time=index).values
 
+        #NaN handling because the loss was NaN fduring training fo the model
+        input_img= np.nan_to_num(input_img,nan=0.0)
         target_img = np.nan_to_num(target_img, nan=0.0)
         input_img = torch.tensor(input_img).unsqueeze(0).float()
         target_img = torch.tensor(target_img).unsqueeze(0).float()
