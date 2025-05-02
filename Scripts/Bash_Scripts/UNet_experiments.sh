@@ -7,19 +7,17 @@
 #SBATCH --time=02:00:00         
 #SBATCH --mem=32G                
 
-#My environment activation
 module load python
 
 source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
 
-#Containing the pipeline: the directory
-
+#Directory containing the pipeline
 cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models
 
 
-#For quick test module
-#python Main.py --quick_test
+#For quick test module uncomment
+python Main.py --quick_test
 
-#For full training modzle
+#For full training modzle utilisattion uncomment
 
-python Main.py 
+#python Main.py
