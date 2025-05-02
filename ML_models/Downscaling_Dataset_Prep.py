@@ -18,10 +18,6 @@ class DownscalingDataset(Dataset):
         input_img = torch.tensor(input_img).unsqueeze(0).float()
         target_img = torch.tensor(target_img).unsqueeze(0).float()
 
-        if self.transform:
-            input_img = self.transform(input_img)
-            target_img = self.transform(target_img)
-
         return input_img, target_img
 
 
