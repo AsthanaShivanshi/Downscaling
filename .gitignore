@@ -3,6 +3,7 @@
 *.nc
 *.csv
 *.txt
+.pth
 
 # Ignore temporary files
 *.log
@@ -12,3 +13,4 @@
 data/
 results/
 checkpoints/
+.gitignore
