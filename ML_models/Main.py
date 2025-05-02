@@ -39,7 +39,7 @@ def main(quick_test=True):
     print(f"Train samples: {len(train_dataset)}, Val: {len(val_dataset)}, Test: {len(test_dataset)}")
 
     # Run training
-    model, history, final_val_loss = run_experiment(train_dataset, val_dataset, quick_test=quick_test, num_epochs=50)
+    model, history, final_val_loss = run_experiment(train_dataset, val_dataset, quick_test=quick_test, num_epochs=30)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train UNet model for downscaling.")
