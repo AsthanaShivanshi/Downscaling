@@ -61,18 +61,17 @@ def train_model(
     return model, history
 
 def checkpoint_save(model, optimizer, epoch, loss, path):
-    # Ensure the directory exists
-    directory = os.path.dirname(path)
-    os.makedirs(directory, exist_ok=True)
 
-    # Save the model checkpoint
-    checkpoint = {
-        'epoch': epoch,
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-        'loss': loss
-    }
-    torch.save(checkpoint, path)
+    if epoch%20==0 and epoch!=0:
 
-    print(f"Model checkpoint saved at: {path}")
+        # Save the model checkpoint
+        checkpoint = {
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': loss
+        }
+        torch.save(checkpoint, path)
+
+        print(f"Model checkpoint saved at: {path}")
 
