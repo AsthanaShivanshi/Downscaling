@@ -38,5 +38,5 @@ def run_experiment(train_dataset, val_dataset, quick_test=False, num_epochs=30):
 
     #### Saving the model is optional uncomment if requiredd
     final_val_loss= history['val_loss'][-1]
-    checkpoint_save(model, optimizer, epoch=num_epochs, loss= final_val_loss, path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/All_Samples_64BS_30epochs_model_checkpoint_UNet_01.pth")
+    checkpoint_save(model, optimizer, epoch=num_epochs, loss= final_val_loss, path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/64BS_30epochs_model_checkpoint_UNet_01.pth")
     return trained_model, history, final_val_loss
