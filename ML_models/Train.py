@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm 
 import os
 
-def train_one_epoch(model, dataloader, optimizer, criterion, quick_test=True):
+def train_one_epoch(model, dataloader, optimizer, criterion, quick_test=False):
     model.train()
     running_loss = 0.0
 

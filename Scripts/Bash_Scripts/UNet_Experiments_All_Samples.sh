@@ -4,7 +4,7 @@
 #SBATCH --error=job_error-%j.txt  
 #SBATCH --ntasks=1             
 #SBATCH --cpus-per-task=4     
-#SBATCH --time=02:00:00         
+#SBATCH --time=08:00:00         
 #SBATCH --mem=32G                
 
 module load python
@@ -16,8 +16,8 @@ cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML
 
 
 #For quick test module uncomment
-python Main.py --quick_test
+#python Main.py --quick_test
 
 #For full training modzle utilisattion uncomment
 
-#python Main.py
+python Main.py
