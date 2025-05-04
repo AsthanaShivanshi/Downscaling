@@ -62,7 +62,7 @@ def train_model(
 
 def checkpoint_save(model, optimizer, epoch, loss, path):
 
-    if epoch%20==0 and epoch!=0:
+    if epoch%10==0 and epoch!=0:
 
         # Save the model checkpoint
         checkpoint = {
