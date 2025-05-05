@@ -25,38 +25,34 @@ def gridded_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 50}
     return r2
 
 
-def pooled_R_squared(pred_path, truth_path, var1, var2, chunk_size=None):
-    """
-    Calculate a single pooled R^2 between two variables, pooling across all dimensions.
-    """
-    import xarray as xr
-    import numpy as np
 
+def pooled_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 100}):
+    """
+    Renders pooled R squared by pooling all values across all time steps and grid cells.
+    """
     ds_pred = xr.open_dataset(pred_path, chunks=chunk_size)
     ds_true = xr.open_dataset(truth_path, chunks=chunk_size)
+    
+    var1_data, var2_data = xr.align(ds_pred[var1], ds_true[var2])
+    
+    valid_mask = (~np.isnan(var1_data)) & (~np.isnan(var2_data))
+    
+    diff_squared = (var1_data - var2_data) ** 2
+    diff_squared = diff_squared.where(valid_mask)
+    ss_res = diff_squared.sum()
+    
+    truth_valid = var2_data.where(valid_mask)
+    truth_mean = truth_valid.mean()
+    
+    ss_tot = ((truth_valid - truth_mean) ** 2).sum()
+    
+    r2_total = 1.0 - (ss_res / ss_tot) #1-ratio(residual sum of squares/total sum of squares)
+    
+    r2_total = r2_total.astype(np.float32)
+    
+    return r2_total
 
-    var1_data, var2_data = xr.align(ds_pred[var1], ds_true[var2], join="override")
 
-    print("var1_data.dims:", var1_data.dims)
-    print("var2_data.dims:", var2_data.dims)
-
-    # Here you correctly stack over (N, E)
-    var1_flat = var1_data.stack(points=("N", "E"))
-    var2_flat = var2_data.stack(points=("N", "E"))
-
-    valid_mask = (~np.isnan(var1_flat)) & (~np.isnan(var2_flat))
-
-    var1_valid = var1_flat.where(valid_mask, drop=True)
-    var2_valid = var2_flat.where(valid_mask, drop=True)
-
-    ss_res = ((var1_valid - var2_valid) ** 2).sum().item()
-
-    mean_true = var2_valid.mean()
-    ss_tot = ((var2_valid - mean_true) ** 2).sum().item()
-
-    r2 = 1 - (ss_res / ss_tot)
-
-    return np.float32(r2)
 
 
 
