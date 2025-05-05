@@ -36,7 +36,7 @@ def pooled_R_squared(pred_path, truth_path, var1, var2, chunk_size={'time': 100}
     var1_data, var2_data = xr.align(ds_pred[var1], ds_true[var2])
     
     valid_mask = (~np.isnan(var1_data)) & (~np.isnan(var2_data))
-    
+    valid_mask=valid_mask.compute()
     diff_squared = (var1_data - var2_data) ** 2
     diff_squared = diff_squared.where(valid_mask)
     ss_res = diff_squared.sum()
