@@ -3,7 +3,7 @@ import xarray as xr
 import numpy as np
 
 # Load dataset
-ds2 = xr.open_dataset("/path/to/targets_precip_masked_train.nc", chunks={"time": 100})
+ds2 = xr.open_dataset("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/targets_precip_masked_train.nc", chunks={"time": 100})
 
 RhiresD = ds2['RhiresD']
 
