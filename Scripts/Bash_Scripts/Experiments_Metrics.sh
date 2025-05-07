@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=UNet_training       
+#SBATCH --job-name=KS_Tests      
 #SBATCH --output=job_output-%j.txt 
 #SBATCH --error=job_error-%j.txt  
 #SBATCH --ntasks=1             
