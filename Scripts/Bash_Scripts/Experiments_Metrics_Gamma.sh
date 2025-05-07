@@ -18,4 +18,4 @@ source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bi
 cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Scripts/Functions
 
 
-python Run_KS_Tests.py
+python Run_Gamma_Tests.py
