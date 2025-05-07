@@ -26,7 +26,27 @@ def Kalmogorov_Smirnov_Grid_Cell(tabsd_wet, mu, sigma, rhiresd_wet, alpha, beta,
 
 #xxxxxxxxxxxxxxxxxxxxxxKSTest for each grid cell in Siwtezrland###############
 
-def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05):
+# Helper function for dask (for processign a block)
+@delayed
+def process_block(temp, mean, std, i_start, i_end, j_start, j_end):
+    block_KS = np.full((i_end - i_start, j_end - j_start), np.nan)
+    block_pval = np.full((i_end - i_start, j_end - j_start), np.nan)
+
+    for ii in range(i_start, i_end):
+        for jj in range(j_start, j_end):
+            data = temp[:, ii, jj]
+            mu = mean[ii, jj]
+            sigma = std[ii, jj]
+            data = data[~np.isnan(data)]
+            if len(data) > 0 and sigma > 0:
+                stat, pval = kstest(data, 'norm', args=(mu, sigma))
+                block_KS[ii - i_start, jj - j_start] = stat
+                block_pval[ii - i_start, jj - j_start] = pval
+
+    return block_KS, block_pval
+
+# Main function
+def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05, block_size=10):
     """Performs KS test for each grid cell and plot the resulting gridwise plot along with rejedction/acceptance in accordance with 
     the p value (rejecting/accepting the null hypothesis)"""
 
@@ -37,26 +57,22 @@ def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05):
     # Dask delayed list
     tasks = []
 
-    for i in range(n_lat):
-        for j in range(n_lon):
-            data = temp[:, i, j].values
-            mu = mean[i, j].values
-            sigma = std[i, j].values
-
-            task = delayed(ks_test_single_point)(data, mu, sigma)
+    for i in range(0, n_lat, block_size):
+        for j in range(0, n_lon, block_size):
+            i_end = min(i + block_size, n_lat)
+            j_end = min(j + block_size, n_lon)
+            task = process_block(temp.values, mean.values, std.values, i, i_end, j, j_end)
             tasks.append((i, j, task))
 
     # Compute all tasks in parallel, with progress bar showing progress of the computation 
     with ProgressBar():
-
-        results = compute(*[t[2] for t in tasks],scheduler="threads") #Uses synchronous scheduler by default, wont show progress bar if not changed to threads
-        
+        results = compute(*[t[2] for t in tasks], scheduler="threads") #Uses synchronous scheduler by default, wont show progress bar if not changed to threads
 
     # Assign results
     for idx, (i, j, _) in enumerate(tasks):
-        stat, pval = results[idx]
-        KS_Stat[i, j] = stat
-        p_val_ks_stat[i, j] = pval
+        block_KS, block_pval = results[idx]
+        KS_Stat[i:i+block_KS.shape[0], j:j+block_KS.shape[1]] = block_KS
+        p_val_ks_stat[i:i+block_pval.shape[0], j:j+block_pval.shape[1]] = block_pval
 
     E = data_path["E"].values
     N = data_path["N"].values
@@ -86,14 +102,3 @@ def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05):
     plt.show()
 
     return KS_Stat, p_val_ks_stat
-
-# Helper function for dask
-@delayed
-def ks_test_single_point(data, mu, sigma):
-    data = data[~np.isnan(data)]
-    if len(data) > 0 and sigma > 0:
-        stat, pval = kstest(data, 'norm', args=(mu, sigma))
-        return stat, pval
-    else:
-        return np.nan, np.nan
-
