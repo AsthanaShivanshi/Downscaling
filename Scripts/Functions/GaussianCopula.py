@@ -41,7 +41,7 @@ def GaussianCopula_Sim(copula_corr_matrix,
 
     # Plot ONLY empirical pseudo observations
     plt.figure(figsize=(8, 6))
-    plt.scatter(rhires_U_empirical, tabs_U_empirical, alpha=0.5, color='red', edgecolor='k')
+    plt.scatter(rhires_U_empirical, tabs_U_empirical, alpha=0.2, color='red', edgecolor='k')
     plt.title(f'Empirical Pseudo-Observations ({city_name}, {season_label})')
     plt.xlabel('rhiresd_U')
     plt.ylabel('tabsd_U')
@@ -51,7 +51,7 @@ def GaussianCopula_Sim(copula_corr_matrix,
 
     # Plot ONLY simulated pseudo observations
     plt.figure(figsize=(8, 6))
-    plt.scatter(rhires_U_sim, tabs_U_sim, alpha=0.5, color='blue', edgecolor='none')
+    plt.scatter(rhires_U_sim, tabs_U_sim, alpha=0.2, color='blue', edgecolor='none')
     plt.title(f'Simulated Pseudo-Observations ({city_name}, {season_label}, {n_samples} samples)')
     plt.xlabel('rhiresd_U')
     plt.ylabel('tabsd_U')
