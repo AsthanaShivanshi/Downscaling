@@ -11,12 +11,14 @@ ds2 = xr.open_dataset("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downsc
 TabsD = ds1['TabsD']
 RhiresD = ds2['RhiresD']
 
+# Apply mask for NaN in lat/lon
 lon = TabsD.lon
 lat = TabsD.lat
 mask = np.isnan(lon) | np.isnan(lat)
 TabsD_gridded = TabsD.where(~mask)
 RhiresD_gridded = RhiresD.where(~mask)
 
+# Only wet days
 TabsD_wet = TabsD_gridded.where(RhiresD_gridded >= 0.1)
 RhiresD_wet = RhiresD_gridded.where(RhiresD_gridded >= 0.1)
 
@@ -28,21 +30,17 @@ seasons = {
     "MAM": [3, 4, 5]
 }
 
+# Loop over seasons
 for season_name, months in seasons.items():
-    # Special handling for DJF (December, January, February) across years
-    if season_name == "DJF":
-        mask_months = (TabsD_wet['time'].dt.month.isin(months))
-    else:
-        mask_months = (TabsD_wet['time'].dt.month.isin(months))
-    
+    mask_months = TabsD_wet['time'].dt.month.isin(months)
     TabsD_wet_season = TabsD_wet.sel(time=mask_months)
     RhiresD_wet_season = RhiresD_wet.sel(time=mask_months)
 
-    # Mean and Std computation (per grid)
+    # Compute seasonal mean and std
     Mu_TabsD_season = TabsD_wet_season.mean(dim="time", skipna=True)
     Sigma_TabsD_season = TabsD_wet_season.std(dim="time", ddof=0, skipna=True)
 
-    # Run KS test for this season
+    # Run KS test
     KS_Stat, p_val_ks_stat = Kalmogorov_Smirnov_gridded(
         TabsD_wet_season, 
         Mu_TabsD_season, 
@@ -51,3 +49,5 @@ for season_name, months in seasons.items():
         block_size=20,
         season=season_name
     )
+
+    print(f"Finished KS Test and plotting for {season_name}")
