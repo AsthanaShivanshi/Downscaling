@@ -1,0 +1,53 @@
+# run_ks_tests.py
+
+from KS_Test import Kalmogorov_Smirnov_gridded
+import xarray as xr
+import numpy as np
+
+# Load datasets
+ds1 = xr.open_dataset("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/targets_tas_masked_train.nc", chunks={"time": 100})
+ds2 = xr.open_dataset("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/targets_precip_masked_train.nc", chunks={"time": 100})
+
+TabsD = ds1['TabsD']
+RhiresD = ds2['RhiresD']
+
+lon = TabsD.lon
+lat = TabsD.lat
+mask = np.isnan(lon) | np.isnan(lat)
+TabsD_gridded = TabsD.where(~mask)
+RhiresD_gridded = RhiresD.where(~mask)
+
+TabsD_wet = TabsD_gridded.where(RhiresD_gridded >= 0.1)
+RhiresD_wet = RhiresD_gridded.where(RhiresD_gridded >= 0.1)
+
+# Define seasons
+seasons = {
+    "JJA": [6, 7, 8],
+    "SON": [9, 10, 11],
+    "DJF": [12, 1, 2],
+    "MAM": [3, 4, 5]
+}
+
+for season_name, months in seasons.items():
+    # Special handling for DJF (December, January, February) across years
+    if season_name == "DJF":
+        mask_months = (TabsD_wet['time'].dt.month.isin(months))
+    else:
+        mask_months = (TabsD_wet['time'].dt.month.isin(months))
+    
+    TabsD_wet_season = TabsD_wet.sel(time=mask_months)
+    RhiresD_wet_season = RhiresD_wet.sel(time=mask_months)
+
+    # Mean and Std computation (per grid)
+    Mu_TabsD_season = TabsD_wet_season.mean(dim="time", skipna=True)
+    Sigma_TabsD_season = TabsD_wet_season.std(dim="time", ddof=0, skipna=True)
+
+    # Run KS test for this season
+    KS_Stat, p_val_ks_stat = Kalmogorov_Smirnov_gridded(
+        TabsD_wet_season, 
+        Mu_TabsD_season, 
+        Sigma_TabsD_season, 
+        data_path=ds1,
+        block_size=20,
+        season=season_name
+    )

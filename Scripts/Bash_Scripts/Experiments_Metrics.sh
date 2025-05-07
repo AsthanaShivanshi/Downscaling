@@ -24,4 +24,4 @@ cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML
 #For full training modzle utilisattion uncomment
 #Model checkpoint will be saved at 20 epochs, then will continue from there to avoid losing everything
 
-python Main.py
+python Run_KS_Tests.py
