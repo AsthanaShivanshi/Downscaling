@@ -8,7 +8,7 @@ from scipy.stats import kstest
 from pyproj import Transformer
 import dask.array as da
 from dask import delayed, compute
-from das.diagnostics import ProgressBar
+from dask.diagnostics import ProgressBar
 
 def Kalmogorov_Smirnov_Grid_Cell(tabsd_wet, mu, sigma, rhiresd_wet, alpha, beta, city_name="City"):
     """
@@ -49,7 +49,8 @@ def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05):
     # Compute all tasks in parallel, with progress bar showing progress of the computation 
     with ProgressBar():
 
-        results = compute(*[t[2] for t in tasks])
+        results = compute(*[t[2] for t in tasks],scheduler="threads") #Uses synchronous scheduler by default, wont show progress bar if not changed to threads
+        
 
     # Assign results
     for idx, (i, j, _) in enumerate(tasks):
