@@ -9,6 +9,7 @@ from pyproj import Transformer
 import dask.array as da
 from dask import delayed, compute
 from dask.diagnostics import ProgressBar
+ProgressBar.register()
 
 def Kalmogorov_Smirnov_Grid_Cell(tabsd_wet, mu, sigma, rhiresd_wet, alpha, beta, city_name="City"):
     """
@@ -46,7 +47,7 @@ def process_block(temp, mean, std, i_start, i_end, j_start, j_end):
     return block_KS, block_pval
 
 # Main function
-def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05, block_size=10):
+def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05, block_size=20):
     """Performs KS test for each grid cell and plot the resulting gridwise plot along with rejedction/acceptance in accordance with 
     the p value (rejecting/accepting the null hypothesis)"""
 
