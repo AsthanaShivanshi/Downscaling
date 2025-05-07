@@ -65,7 +65,6 @@ def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05, block_siz
             task = process_block(temp.values, mean.values, std.values, i, i_end, j, j_end)
             tasks.append((i, j, task))
 
-    # Compute all tasks in parallel, with progress bar showing progress of the computation 
     with ProgressBar():
         results = compute(*[t[2] for t in tasks], scheduler="threads") #Uses synchronous scheduler by default, wont show progress bar if not changed to threads
 
