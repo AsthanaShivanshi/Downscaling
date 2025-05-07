@@ -18,10 +18,4 @@ source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bi
 cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Scripts/Functions
 
 
-#For quick test module uncomment
-#python Main.py --quick_test
-
-#For full training modzle utilisattion uncomment
-#Model checkpoint will be saved at 20 epochs, then will continue from there to avoid losing everything
-
 python Run_KS_Tests.py
