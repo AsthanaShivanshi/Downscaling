@@ -110,11 +110,6 @@ class UNet(nn.Module):
         #This output has to be cropped back to the original size due to the padding introduced earlier
 
         outputs= outputs[ :, :, :original_height, :original_width] #Crop the output to the original size
-        #Covering all bases in case there is still a mismatch for some odd reason I cant figure out
-        #Due to the nature of U net architecture, the output might not match exactly the target grid
-        #This is a safety check
-        if targets is not None and outputs.shape[2:] != targets.shape[2:]:
-            outputs = torch.nn.functional.interpolate(outputs, size=targets.shape[2:], mode='bilinear', align_corners=False)
     
         return outputs
 
