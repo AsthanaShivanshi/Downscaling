@@ -86,7 +86,7 @@ def Kalmogorov_Smirnov_gridded(temp, mean, std, data_path, alpha=0.05, block_siz
     plt.tight_layout()
 
     # Save plot to file
-    plt.savefig(f"KS_Test_{season}.png", dpi=300)
+    plt.savefig(f"/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Outputs/plots/KS_Test_training_set_{season}.png", dpi=300)
     plt.close()
 
     return KS_Stat, p_val_ks_stat
