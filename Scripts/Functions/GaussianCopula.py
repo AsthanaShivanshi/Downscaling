@@ -1,16 +1,16 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm, multivariate_normal
 
 def GaussianCopula_Sim(copula_corr_matrix, 
-                                       rhires_U_empirical, 
-                                       tabs_U_empirical, 
-                                       n_samples, 
-                                       city_name="City", 
-                                       season_label="JJA"):
+                       rhires_U_empirical, 
+                       tabs_U_empirical, 
+                       n_samples, 
+                       city_name="City", 
+                       season_label="JJA"):
     """
-    Plots the Gaussian copula density and simulates pseudo-observations from it along side the empirical pseudo obsevrations in the Gaussian Copula Space.
+    Plots the Gaussian copula density and simulates pseudo-observations from it,
+    showing empirical and simulated pseudo-observations in separate plots.
     """
 
     # Gaussian copula density
@@ -36,17 +36,25 @@ def GaussianCopula_Sim(copula_corr_matrix,
     # Simulate N samples from the Gaussian copula
     simulated_Z = np.random.multivariate_normal(mean=[0, 0], cov=copula_corr_matrix, size=n_samples)
     simulated_U = norm.cdf(simulated_Z)
-    rhires_U_sim = simulated_U[:, 0] #x axis
-    tabs_U_sim = simulated_U[:, 1] #y axis
+    rhires_U_sim = simulated_U[:, 0] # x-axis
+    tabs_U_sim = simulated_U[:, 1]   # y-axis
 
-    # Plot empirical vs simulated pseudo obs
+    # Plot ONLY empirical pseudo observations
     plt.figure(figsize=(8, 6))
-    plt.scatter(rhires_U_empirical, tabs_U_empirical, alpha=0.3, color='red', edgecolor='k', label='Empirical Pseudo Obs')
-    plt.scatter(rhires_U_sim, tabs_U_sim, alpha=0.3, color='blue', edgecolor='none', label=f'Simulated ({n_samples} samples)')
-    plt.title(f'Empirical vs Simulated Uniform Marginals ({city_name}, {season_label})')
+    plt.scatter(rhires_U_empirical, tabs_U_empirical, alpha=0.5, color='red', edgecolor='k')
+    plt.title(f'Empirical Pseudo-Observations ({city_name}, {season_label})')
     plt.xlabel('rhiresd_U')
     plt.ylabel('tabsd_U')
-    plt.legend()
-    plt.grid(False)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+    # Plot ONLY simulated pseudo observations
+    plt.figure(figsize=(8, 6))
+    plt.scatter(rhires_U_sim, tabs_U_sim, alpha=0.5, color='blue', edgecolor='none')
+    plt.title(f'Simulated Pseudo-Observations ({city_name}, {season_label}, {n_samples} samples)')
+    plt.xlabel('rhiresd_U')
+    plt.ylabel('tabsd_U')
+    plt.grid(True)
     plt.tight_layout()
     plt.show()
