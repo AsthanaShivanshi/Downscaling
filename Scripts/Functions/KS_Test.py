@@ -9,7 +9,7 @@ from pyproj import Transformer
 import dask.array as da
 from dask import delayed, compute
 from dask.diagnostics import ProgressBar
-ProgressBar.register()
+ProgressBar().register()
 
 def Kalmogorov_Smirnov_Grid_Cell(tabsd_wet, mu, sigma, rhiresd_wet, alpha, beta, city_name="City"):
     """
