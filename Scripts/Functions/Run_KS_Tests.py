@@ -1,6 +1,5 @@
-# run_ks_tests.py
 
-from KS_Test import Kalmogorov_Smirnov_gridded
+from KS_gridded import Kalmogorov_Smirnov_gridded
 import xarray as xr
 import numpy as np
 
