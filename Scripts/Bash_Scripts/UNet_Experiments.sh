@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1             
 #SBATCH --cpus-per-task=4     
 #SBATCH --time=3-00:00:00         
-#SBATCH --mem=32G  
+#SBATCH --mem=64G  
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
               
@@ -17,11 +17,12 @@ source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bi
 #Directory containing the pipeline
 cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models
 
+export WANDB_MODE= online
 
 #For quick test module uncomment
-#python Main.py --quick_test
+python Main.py --quick_test
 
 #For full training modzle utilisattion uncomment
 #Model checkpoint will be saved at 20 epochs, then will continue from there to avoid losing everything
 
-python Main.py
+#python Main.py
