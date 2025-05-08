@@ -1,6 +1,8 @@
 CONFIG = {
     "batch_size": 32,
     "num_workers": 4,
+    "quick_test": True,  #Can be customised according to requirement of the exoeriment 
+
     "input_paths": {
         # Train
         "precip_train_input": "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/SCALED_features_precip_masked_bicubic_train.nc",
@@ -20,6 +22,7 @@ CONFIG = {
         "precip_test_target": "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Test/SCALED_targets_precip_masked_test.nc",
         "temp_test_target": "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Test/SCALED_targets_tas_masked_test.nc",
     },
+
     "var_names": {
         "precip_input": "pr",
         "temp_input": "tas",
