@@ -3,6 +3,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm 
 import os
+import wandb
 
 def train_one_epoch(model, dataloader, optimizer, criterion, quick_test=False):
     model.train()
@@ -46,32 +47,40 @@ def train_model(
     quick_test=False
 ):
     history = {"train_loss": [], "val_loss": []}
+    best_val_loss = float('inf')
 
     for epoch in range(num_epochs):
-
         print(f"\nEpoch {epoch+1}/{num_epochs}")
-        train_loss = train_one_epoch(model, train_loader, optimizer, criterion,quick_test)
-        val_loss = validate(model, val_loader, criterion,quick_test)
+
+        train_loss = train_one_epoch(model, train_loader, optimizer, criterion, quick_test)
+        val_loss = validate(model, val_loader, criterion, quick_test)
 
         history["train_loss"].append(train_loss)
         history["val_loss"].append(val_loss)
 
         print(f"Train Loss: {train_loss:.3f} | Val Loss: {val_loss:.3f}")
 
+        wandb.log({
+            "epoch": epoch + 1,
+            "train_loss": train_loss,
+            "val_loss": val_loss,
+        })
+
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            checkpoint_save(
+                model, optimizer, epoch+1, val_loss,
+                path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model_checkpoint.pth"
+            )
+
     return model, history
 
 def checkpoint_save(model, optimizer, epoch, loss, path):
-
-    if epoch%10==0 and epoch!=0:
-
-        # Save the model checkpoint
-        checkpoint = {
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': loss
-        }
-        torch.save(checkpoint, path)
-
-        print(f"Model checkpoint saved at: {path}")
-
+    checkpoint = {
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'loss': loss
+    }
+    torch.save(checkpoint, path)
+    print(f"Best model checkpoint saved at: {path}")
