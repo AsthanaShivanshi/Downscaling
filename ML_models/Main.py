@@ -24,6 +24,7 @@ def main():
         project="Deterministic UNet",
         name="Experiment_Quick_Test" if quick_test else "Experiment_Full_Run",
         config=CONFIG
+        mode= "online"
     )
 
     precip_train = load_dataset(paths["precip_train_input"], paths["precip_train_target"], var_names["precip_input"], var_names["precip_target"])

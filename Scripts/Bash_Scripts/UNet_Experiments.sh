@@ -17,7 +17,7 @@ source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bi
 #Directory containing the pipeline
 cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models
 
-export WANDB_MODE= online
+export WANDB_MODE="online"
 
 #For quick test module uncomment
 python Main.py --quick_test
