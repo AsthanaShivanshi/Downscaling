@@ -7,7 +7,7 @@
 #SBATCH --time=3-00:00:00        
 #SBATCH --mem=64G                
 #SBATCH --partition=cpu         
-# (NO --gres=gpu:1 )
+# (NO --gres=gpu:1)
 
 module load python
 
