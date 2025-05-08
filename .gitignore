@@ -14,5 +14,6 @@
 data/
 results/
 checkpoints/
-Outputs/
+/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Outputs/
+
 .gitignore
