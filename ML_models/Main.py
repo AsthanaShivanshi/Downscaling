@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import DataLoader
 import xarray as xr
 import os
+import wandb
 
 from Experiments import run_experiment
 from Downscaling_Dataset_Prep import DownscalingDataset, PairedDataset
@@ -13,7 +14,13 @@ def load_dataset(input_path, target_path, input_var, target_var):
     target_ds = xr.open_dataset(target_path)
     return DownscalingDataset(input_ds, target_ds, input_var, target_var)
 
-def main(quick_test=True):
+def main(quick_test):
+
+    wandb.init(project= "Deterministic UNet",
+               name="Experiment_Quick_Test",
+               config= CONFIG)
+    
+
     paths = CONFIG["input_paths"]
     var_names = CONFIG["var_names"]
 
@@ -40,6 +47,10 @@ def main(quick_test=True):
 
     # Run training
     model, history, final_val_loss = run_experiment(train_dataset, val_dataset, quick_test=quick_test, num_epochs=30)
+
+    #Logging final validation loss
+    wandb.log({"final_validation_loss": final_val_loss})
+    wandb.finish()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train UNet model for downscaling.")

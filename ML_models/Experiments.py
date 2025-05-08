@@ -6,11 +6,14 @@ import torch.nn as nn
 from Train import train_model
 from Train import checkpoint_save
 import os
+import wandb
 
 def run_experiment(train_dataset, val_dataset, quick_test=False, num_epochs=30):
     model = UNet(in_channels=2, out_channels=2)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     criterion = nn.MSELoss()
+
+    wandb.watch(model,log="all", log_freq=100) 
 
     if quick_test:
         train_loader = torch.utils.data.DataLoader(
