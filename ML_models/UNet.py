@@ -111,7 +111,12 @@ class UNet(nn.Module):
 
         outputs= outputs[ :, :, :original_height, :original_width] #Crop the output to the original size
     
-        return outputs
+        #Adding residuals back the output
+        inputs_cropped = inputs[:, :, :original_height, :original_width]
+
+        final_outputs = outputs + inputs_cropped
+
+        return final_outputs
 
 
 
