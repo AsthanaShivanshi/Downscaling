@@ -4,6 +4,7 @@
 *.csv
 *.txt
 .pth
+.png
 
 # Ignore temporary files
 *.log
@@ -13,5 +14,5 @@
 data/
 results/
 checkpoints/
+Outputs/
 .gitignore
-.png
