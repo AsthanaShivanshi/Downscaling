@@ -23,7 +23,7 @@ def main():
     wandb.init(
         project="Deterministic UNet",
         name="Experiment_Quick_Test" if quick_test else "Experiment_Full_Run",
-        config=CONFIG
+        config=CONFIG,
         mode= "online"
     )
 
