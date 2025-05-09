@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=Gaussian_tests     
+#SBATCH --job-name=Gamma_tests     
 #SBATCH --output=job_output-%j.txt 
 #SBATCH --error=job_error-%j.txt  
 #SBATCH --ntasks=1              
