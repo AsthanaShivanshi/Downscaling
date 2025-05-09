@@ -33,12 +33,15 @@ def fit_gamma_mle(data):
     
 @delayed
 def process_block_precip(temp_block, i_start, j_start):
-    block_KS = np.full(temp_block.shape[1:], np.nan)
-    block_pval = np.full(temp_block.shape[1:], np.nan)
+    # Force evaluation once
+    block_data = temp_block.compute()  # shape: (time, block_lat, block_lon)
 
-    for ii in range(temp_block.shape[1]):
-        for jj in range(temp_block.shape[2]):
-            data = temp_block[:, ii, jj].compute()
+    block_KS = np.full(block_data.shape[1:], np.nan)
+    block_pval = np.full(block_data.shape[1:], np.nan)
+
+    for ii in range(block_data.shape[1]):
+        for jj in range(block_data.shape[2]):
+            data = block_data[:, ii, jj]
             data = data[~np.isnan(data)]
             if len(data) > 0:
                 alpha_mle, beta_mle = fit_gamma_mle(data)
@@ -47,7 +50,9 @@ def process_block_precip(temp_block, i_start, j_start):
                 stat, pval = kstest(data, 'gamma', args=(alpha_mle, 0, beta_mle))
                 block_KS[ii, jj] = stat
                 block_pval[ii, jj] = pval
+
     return block_KS, block_pval
+
 
 
 def Gamma_KS_gridded(temp, data_path, alpha=0.05, block_size=20, season="Season"):
@@ -62,7 +67,7 @@ def Gamma_KS_gridded(temp, data_path, alpha=0.05, block_size=20, season="Season"
         for j in range(0, n_lon, block_size):
             i_end = min(i + block_size, n_lat)
             j_end = min(j + block_size, n_lon)
-            task = process_block_precip(temp.values, i, i_end, j, j_end)
+            task = process_block_precip(temp[:, i:i_end, j:j_end], i, j)
             tasks.append((i, j, task))
 
     with ProgressBar():

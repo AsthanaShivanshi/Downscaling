@@ -1,7 +1,7 @@
 from Gamma_KS_Test import Gamma_KS_gridded
 import xarray as xr
 import numpy as np
-from dask.distributed import Client, LocalCluster
+from dask.distributed import Client
 import sys
 
 season_name=sys.argv[1] #Season is passed from the way it is written in Slurm script. Seasonwise processing, looping over seasons redundant
@@ -34,6 +34,4 @@ RhiresD_wet_season=RhiresD_wet.sel(time=mask_months)
 
 KS_Stat , p_val_ks_stat=Gamma_KS_gridded(RhiresD_wet_season,data_path=ds2,block_size=10, season=season_name)
 
-if __name__ == "__main__":
-    cluster = LocalCluster(n_workers=4, threads_per_worker=1)
-    client = Client(cluster)
+
