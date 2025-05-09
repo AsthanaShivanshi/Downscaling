@@ -2,10 +2,9 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm 
-import os
 import wandb
 
-def train_one_epoch(model, dataloader, optimizer, criterion, quick_test=False):
+def train_one_epoch(model, dataloader, optimizer, criterion, scheduler=None, quick_test=False):
     model.train()
     running_loss = 0.0
 
@@ -16,13 +15,21 @@ def train_one_epoch(model, dataloader, optimizer, criterion, quick_test=False):
         loss.backward()
         optimizer.step()
 
+        if scheduler:
+            scheduler.step()
+
         running_loss += loss.item()
+
+        # Log training loss and learning rate to W&B
+        log_dict = {"train_loss_batch": loss.item()}
+        if scheduler:
+            log_dict["lr"] = scheduler.get_last_lr()[0]
+        wandb.log(log_dict)
 
         if quick_test and i == 2:
             break
 
     return running_loss / (i + 1)
-
 
 def validate(model, dataloader, criterion, quick_test=False):
     model.eval()
@@ -39,10 +46,10 @@ def validate(model, dataloader, criterion, quick_test=False):
 
     return running_loss / (j + 1)
 
-
 def train_model(
     model, train_loader, val_loader,
     optimizer, criterion,
+    scheduler=None,
     num_epochs=30,
     quick_test=False
 ):
@@ -52,7 +59,7 @@ def train_model(
     for epoch in range(num_epochs):
         print(f"\nEpoch {epoch+1}/{num_epochs}")
 
-        train_loss = train_one_epoch(model, train_loader, optimizer, criterion, quick_test)
+        train_loss = train_one_epoch(model, train_loader, optimizer, criterion, scheduler, quick_test)
         val_loss = validate(model, val_loader, criterion, quick_test)
 
         history["train_loss"].append(train_loss)
@@ -62,15 +69,15 @@ def train_model(
 
         wandb.log({
             "epoch": epoch + 1,
-            "train_loss": train_loss,
-            "val_loss": val_loss,
+            "train_loss_epoch": train_loss,
+            "val_loss_epoch": val_loss,
         })
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             checkpoint_save(
                 model, optimizer, epoch+1, val_loss,
-                path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/fullmodel_best_model_checkpoint.pth"
+                path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/CyclicalLR_Full_Model_model_UNet_01.pth"
             )
 
     return model, history
