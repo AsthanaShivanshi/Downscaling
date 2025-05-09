@@ -77,7 +77,7 @@ def train_model(
             best_val_loss = val_loss
             checkpoint_save(
                 model, optimizer, epoch+1, val_loss,
-                path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/CyclicalLR_Full_Model_model_UNet_01.pth"
+                path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/CyclicalLR_100samples__model_UNet_01.pth"
             )
 
     return model, history
