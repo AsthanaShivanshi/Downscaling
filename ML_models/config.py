@@ -1,7 +1,7 @@
 CONFIG = {
     "batch_size": 32,
     "num_workers": 4,
-    "quick_test": True,  #Can be customised according to requirement of the exoeriment 
+    "quick_test": False,  #Can be customised according to requirement of the exoeriment 
 
     "input_paths": {
         # Train

@@ -109,9 +109,9 @@ class UNet(nn.Module):
 
         #This output has to be cropped back to the original size due to the padding introduced earlier
 
-        outputs= outputs[ :, :, :original_height, :original_width] #Crop the output to the original size
+        outputs= outputs[ :, :, :original_height, :original_width] 
     
-        #Adding residuals back the output
+        #Adding residuals back the output to produce the final output
         inputs_cropped = inputs[:, :, :original_height, :original_width]
 
         final_outputs = outputs + inputs_cropped
