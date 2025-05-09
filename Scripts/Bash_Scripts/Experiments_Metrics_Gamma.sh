@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=Gamma_tests     
+#SBATCH --array=0-3 #For all four seasons , looping for generating plots
 #SBATCH --output=job_output-%j.txt 
 #SBATCH --error=job_error-%j.txt  
 #SBATCH --ntasks=1              
