@@ -6,7 +6,7 @@ CONFIG = {
     "input_paths": {
         # Train
         "precip_train_input": "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/SCALED_features_precip_masked_bicubic_train.nc",
-        "temp_train_input": "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/features_tas_masked_bicubic_train.nc",
+        "temp_train_input": "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/SCALED_features_tas_masked_bicubic_train.nc",
         "precip_train_target": "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/SCALED_targets_precip_masked_train.nc",
         "temp_train_target": "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/SCALED_targets_tas_masked_train.nc",
         
