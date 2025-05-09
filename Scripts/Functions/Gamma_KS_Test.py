@@ -32,23 +32,23 @@ def fit_gamma_mle(data):
         return np.nan, np.nan
     
 @delayed
-def process_block_precip(temp, i_start, i_end, j_start, j_end):
-    block_KS = np.full((i_end - i_start, j_end - j_start), np.nan)
-    block_pval = np.full((i_end - i_start, j_end - j_start), np.nan)
+def process_block_precip(temp_block, i_start, j_start):
+    block_KS = np.full(temp_block.shape[1:], np.nan)
+    block_pval = np.full(temp_block.shape[1:], np.nan)
 
-    for ii in range(i_start, i_end):
-        for jj in range(j_start, j_end):
-            data = temp[:, ii, jj]
+    for ii in range(temp_block.shape[1]):
+        for jj in range(temp_block.shape[2]):
+            data = temp_block[:, ii, jj].compute()
             data = data[~np.isnan(data)]
             if len(data) > 0:
                 alpha_mle, beta_mle = fit_gamma_mle(data)
                 if np.isnan(alpha_mle) or np.isnan(beta_mle):
                     continue
-                # Perform KS test comparing data vs fitted Gamma
                 stat, pval = kstest(data, 'gamma', args=(alpha_mle, 0, beta_mle))
-                block_KS[ii - i_start, jj - j_start] = stat
-                block_pval[ii - i_start, jj - j_start] = pval
+                block_KS[ii, jj] = stat
+                block_pval[ii, jj] = pval
     return block_KS, block_pval
+
 
 def Gamma_KS_gridded(temp, data_path, alpha=0.05, block_size=20, season="Season"):
     """Performs KS test for each grid cell and plot gridwise for precipitation Gamma fitting"""

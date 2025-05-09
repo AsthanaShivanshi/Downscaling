@@ -17,5 +17,8 @@ source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bi
 #Directory containing the pipeline
 cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Scripts/Functions
 
+SEASON_LIST= ("JJA", "SON", "DJF", "MAM")
 
-python Run_Gamma_Tests.py
+SEASON= ${SEASON_LIST[$SLURM_ARRAY_TASK_ID]}
+
+python Run_Gamma_Tests.py $SEASON
