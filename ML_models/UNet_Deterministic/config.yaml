@@ -33,12 +33,12 @@ train:
   scheduler_mode: "triangular"
   base_lr: 1e-4
   max_lr: 1e-3
-
-  step_size_up: 208
   #How was step size chosen? Numer of iterations(training batches) per epoch= len(training_set)/batch_size
-  #So following from above, step size up= Number iter per epoch//2
-  wandb_project: "UNet_Deterministic_YAML_check"
-  wandb_run_name: "CLR_experiment"
+  #So following from above, step size up= Number iter per epoch/2
+  step_size_up: 208
+  
+  wandb_project: "UNet_Deterministic"
+  wandb_run_name: "Experiment_01_QuickTest_CLR"
 
 # Placeholder for the paths in the untracked .paths.yaml file
 data: {}
