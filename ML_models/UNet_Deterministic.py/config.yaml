@@ -11,5 +11,31 @@ variables:
     precip: RhiresD
     temp: TabsD
 
+preprocessing:
+  nan_to_num: true
+  nan_value : 0.0
+
+split:
+  method: "by_decade"
+  seed: 42
+  train_frac: 0.7
+  val_frac: 0.2
+  #Above code Will be later customised for spatial cross val ewtcc
+
+train:
+  num_epochs: 30
+  checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model.pth
+  in_channels: 2
+  out_channels: 2
+  optimizer: "Adam"
+  loss_fn: "MSE"
+  scheduler: "CyclicLR"
+  scheduler_mode: "triangular"
+  base_lr: 1e-4
+  max_lr: 1e-3
+  step_size_up: 1000
+  wandb_project: "unet_downscaling"
+  wandb_run_name: "CLR_experiment"
+
 # Placeholder for the paths in the untracked .paths.yaml file
 data: {}

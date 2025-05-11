@@ -1,5 +1,6 @@
 import sys
 sys.path.append("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/Cyclical_LR_UNet")
+
 from UNet import UNet
 import torch
 import torch.nn as nn
@@ -8,38 +9,59 @@ import os
 import wandb
 from torch.optim.lr_scheduler import CyclicLR
 
-def run_experiment(train_dataset, val_dataset, quick_test=False, num_epochs=30):
-    # Initialize W&B
-    wandb.init(project="unet_downscaling", name="CLR_experiment", config={
-        "optimizer": "Adam",
-        "loss": "MSE",
-        "base_lr": 1e-4,
-        "max_lr": 1e-3,
-        "scheduler": "CyclicLR",
-        "mode": "triangular",
-        "epochs": num_epochs
-    })
+def run_experiment(train_dataset, val_dataset, config):
+    train_cfg = config["train"]
+    exp_cfg = config["experiment"]
 
-    model = UNet(in_channels=2, out_channels=2)
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-    scheduler = CyclicLR(optimizer, base_lr=1e-4, max_lr=1e-3, step_size_up=1000, mode="triangular")
+    # Initialize W&B
+    wandb.init(
+        project=train_cfg.get("wandb_project", "unet_downscaling"),
+        name=train_cfg.get("wandb_run_name", "CLR_experiment"),
+        config={
+            "optimizer": train_cfg.get("optimizer", "Adam"),
+            "loss": train_cfg.get("loss_fn", "MSE"),
+            "base_lr": train_cfg.get("base_lr", 1e-4),
+            "max_lr": train_cfg.get("max_lr", 1e-3),
+            "scheduler": train_cfg.get("scheduler", "CyclicLR"),
+            "mode": train_cfg.get("scheduler_mode", "triangular"),
+            "epochs": train_cfg.get("num_epochs", 30)
+        }
+    )
+
+    model = UNet(in_channels=train_cfg.get("in_channels", 2), out_channels=train_cfg.get("out_channels", 2))
+
+    optimizer = torch.optim.Adam(
+        model.parameters(),
+        lr=train_cfg.get("max_lr", 1e-3)
+    )
+
+    scheduler = CyclicLR(
+        optimizer,
+        base_lr=train_cfg.get("base_lr", 1e-4),
+        max_lr=train_cfg.get("max_lr", 1e-3),
+        step_size_up=train_cfg.get("step_size_up", 1000),
+        mode=train_cfg.get("scheduler_mode", "triangular")
+    )
+
     criterion = nn.MSELoss()
 
     wandb.watch(model, log="all", log_freq=100)
 
+    batch_size = exp_cfg.get("batch_size", 32)
+    quick_test = exp_cfg.get("quick_test", False)
+
     if quick_test:
         train_loader = torch.utils.data.DataLoader(
             torch.utils.data.Subset(train_dataset, range(100)),
-            batch_size=32, shuffle=True
+            batch_size=batch_size, shuffle=True
         )
         val_loader = torch.utils.data.DataLoader(
             torch.utils.data.Subset(val_dataset, range(30)),
-            batch_size=32, shuffle=False
+            batch_size=batch_size, shuffle=False
         )
-        num_epochs = 20
     else:
-        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
-        val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=32, shuffle=False)
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
     trained_model, history = train_model(
         model,
@@ -48,14 +70,15 @@ def run_experiment(train_dataset, val_dataset, quick_test=False, num_epochs=30):
         optimizer,
         criterion,
         scheduler=scheduler,
-        num_epochs=num_epochs,
-        quick_test=quick_test
+        config=config
     )
 
     final_val_loss = history['val_loss'][-1]
+
+    checkpoint_path = train_cfg.get("checkpoint_path", "checkpoints/best_model.pth")
     checkpoint_save(
-        model, optimizer, epoch=num_epochs, loss=final_val_loss,
-        path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/CyclicalLR_100samples__model_UNet_01.pth"
+        model, optimizer, epoch=train_cfg.get("num_epochs", 30),
+        loss=final_val_loss, path=checkpoint_path
     )
 
     return trained_model, history, final_val_loss

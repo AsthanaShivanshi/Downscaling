@@ -3,9 +3,19 @@ from torch.utils.data import Dataset
 import numpy as np
 
 class DownscalingDataset(Dataset):
-    def __init__(self, input_ds, target_ds, var_name_inputs, var_name_targets):
-        self.input = input_ds[var_name_inputs]
-        self.target = target_ds[var_name_targets]
+    def __init__(self, input_ds, target_ds, config, data_type):
+        """
+        data_type: one of ['precip', 'temp']
+        config: full merged config dictionary with paths from the untracked file and variables from the tracked config.yaml file
+        """
+        var_inputs = config["variables"]["input"][data_type]
+        var_targets = config["variables"]["target"][data_type]
+
+        self.input = input_ds[var_inputs]
+        self.target = target_ds[var_targets]
+
+        self.handle_nan = config.get("preprocessing", {}).get("nan_to_num", True)
+        self.nan_value = config.get("preprocessing", {}).get("nan_value", 0.0)
 
     def __len__(self):
         return len(self.input.time)
@@ -14,9 +24,10 @@ class DownscalingDataset(Dataset):
         input_img = self.input.isel(time=index).values
         target_img = self.target.isel(time=index).values
 
-        #NaN handling because the loss was NaN fduring training fo the model
-        input_img= np.nan_to_num(input_img,nan=0.0)
-        target_img = np.nan_to_num(target_img, nan=0.0)
+        if self.handle_nan:
+            input_img = np.nan_to_num(input_img, nan=self.nan_value)
+            target_img = np.nan_to_num(target_img, nan=self.nan_value)
+
         input_img = torch.tensor(input_img).unsqueeze(0).float()
         target_img = torch.tensor(target_img).unsqueeze(0).float()
 

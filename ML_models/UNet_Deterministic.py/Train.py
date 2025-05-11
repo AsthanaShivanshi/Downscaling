@@ -4,9 +4,10 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm 
 import wandb
 
-def train_one_epoch(model, dataloader, optimizer, criterion, scheduler=None, quick_test=False):
+def train_one_epoch(model, dataloader, optimizer, criterion, scheduler=None, config=None):
     model.train()
     running_loss = 0.0
+    quick_test = config["experiment"].get("quick_test", False)
 
     for i, (inputs, targets) in enumerate(tqdm(dataloader, desc="Training")):
         optimizer.zero_grad()
@@ -20,7 +21,6 @@ def train_one_epoch(model, dataloader, optimizer, criterion, scheduler=None, qui
 
         running_loss += loss.item()
 
-        # Log training loss and learning rate to W&B
         log_dict = {"train_loss_batch": loss.item()}
         if scheduler:
             log_dict["lr"] = scheduler.get_last_lr()[0]
@@ -31,9 +31,10 @@ def train_one_epoch(model, dataloader, optimizer, criterion, scheduler=None, qui
 
     return running_loss / (i + 1)
 
-def validate(model, dataloader, criterion, quick_test=False):
+def validate(model, dataloader, criterion, config=None):
     model.eval()
     running_loss = 0.0
+    quick_test = config["experiment"].get("quick_test", False)
 
     with torch.no_grad():
         for j, (inputs, targets) in enumerate(tqdm(dataloader, desc="Validating")):
@@ -46,21 +47,19 @@ def validate(model, dataloader, criterion, quick_test=False):
 
     return running_loss / (j + 1)
 
-def train_model(
-    model, train_loader, val_loader,
-    optimizer, criterion,
-    scheduler=None,
-    num_epochs=30,
-    quick_test=False
-):
+def train_model(model, train_loader, val_loader, optimizer, criterion, scheduler=None, config=None):
+    train_cfg = config["train"]
+    num_epochs = train_cfg.get("num_epochs", 30)
+    checkpoint_path = train_cfg.get("checkpoint_path", "best_model.pth")
+
     history = {"train_loss": [], "val_loss": []}
     best_val_loss = float('inf')
 
     for epoch in range(num_epochs):
         print(f"\nEpoch {epoch+1}/{num_epochs}")
 
-        train_loss = train_one_epoch(model, train_loader, optimizer, criterion, scheduler, quick_test)
-        val_loss = validate(model, val_loader, criterion, quick_test)
+        train_loss = train_one_epoch(model, train_loader, optimizer, criterion, scheduler, config)
+        val_loss = validate(model, val_loader, criterion, config)
 
         history["train_loss"].append(train_loss)
         history["val_loss"].append(val_loss)
@@ -75,10 +74,7 @@ def train_model(
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            checkpoint_save(
-                model, optimizer, epoch+1, val_loss,
-                path="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/CyclicalLR_100samples__model_UNet_01.pth"
-            )
+            checkpoint_save(model, optimizer, epoch+1, val_loss, checkpoint_path)
 
     return model, history
 
