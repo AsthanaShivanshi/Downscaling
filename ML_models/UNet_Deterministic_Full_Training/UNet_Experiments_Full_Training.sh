@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=UNet_training_ReduceLROnPlateau    
-#SBATCH --output=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training/job_output-Reduce_LROnPlateau-%j.txt 
-#SBATCH --error=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training/job_error-Reduce_LROnPlateau%j.txt  
+#SBATCH --job-name=UNet_training_Triangualar_LR   
+#SBATCH --output=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training/job_output-triangular-%j.txt 
+#SBATCH --error=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training/job_error-triangular%j.txt  
 #SBATCH --ntasks=1             
 #SBATCH --cpus-per-task=4     
 #SBATCH --time=3-00:00:00         

@@ -24,25 +24,25 @@ split:
 
 train:
   num_epochs: 20
-  checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model_Halve_LR_On_Plateau_FULL.pth
+  checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model_Triangular_FULL.pth
   in_channels: 2
   out_channels: 2
   optimizer: "Adam"
   loss_fn: "MSE"
-  #scheduler: "CyclicLR"
-  scheduler: "ReduceLROnPlateau"
-  scheduler_mode: "min"
-  #scheduler_mode: "triangular2" #Can be changed to triangular2 or triangular depending on requirements
+  scheduler: "CyclicLR"
+  #scheduler: "ReduceLROnPlateau"
+  #scheduler_mode: "min"
+  scheduler_mode: "triangular" #Can be changed to triangular2 or triangular depending on requirements
   base_lr: 1e-4
   max_lr: 1e-3
-  scheduler_factor: 0.5 #Halving the lr upon plateauing
-  scheduler_patience: 3 #Waiting for N epochs for no improvement
+  #scheduler_factor: 0.5 #Halving the lr upon plateauing
+  #scheduler_patience: 3 #Waiting for N epochs for no improvement
   #How was step size chosen? Numer of iterations(training batches) per epoch= len(training_set)/batch_size
   #So following from above, step size up= Number iter per epoch/2
-  #step_size_up: 208
+  step_size_up: 208
   
   wandb_project: "UNet_Deterministic_FULL_training"
-  wandb_run_name: "Experiment_03_QuickTest_ReduceLROnPlateau"
+  wandb_run_name: "Experiment_02_Triangular"
 
 # Placeholder for the paths in the untracked .paths.yaml file
 data: {}
