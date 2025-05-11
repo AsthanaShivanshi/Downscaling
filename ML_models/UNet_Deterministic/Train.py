@@ -79,16 +79,27 @@ def train_model(model, train_loader, val_loader, optimizer, criterion, scheduler
 
         print(f"Train Loss: {train_loss:.3f} | Val Loss: {val_loss:.3f}")
 
-        wandb.log({
-            "epoch": epoch + 1,
-            "train_loss_epoch": train_loss,
-            "val_loss_epoch": val_loss,
-            "lr_epoch": scheduler.get_last_lr()[0] if scheduler else None
-        })
+        #Custom scheduler depending on the yaml file
+        if scheduler:
+            import torch.optim.lr_scheduler as lrs
+            if isinstance(scheduler,lrs.ReduceLROnPlateau):
+                scheduler.step(val_loss)
+                current_lr=optimizer.param_group[0]["lr"]
+            else:
+                scheduler.step()
+                current_lr=scheduler.get_last_lr()[0]
+        else:
+            current_lr= optimizer.param_group[0]["lr"]
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             checkpoint_save(model, optimizer, epoch+1, val_loss, checkpoint_path)
+
+        wandb.log({"epoch": epoch+1,
+                "train_loss_epoch":train_loss,
+                "val_loss_epoch": val_loss,
+                "lr_epoch": current_lr
+                })
 
     return model, history
 

@@ -19,7 +19,6 @@ def main(config):
     var_names = config["variables"]
     quick_test = config["experiment"].get("quick_test", False)
 
-    # Load datasets
     root = Path(paths["root"])
     precip_train = load_dataset(root / paths["train"]["inputs"]["precip"], root / paths["train"]["targets"]["precip"], config, "precip")
     temp_train = load_dataset(root / paths["train"]["inputs"]["temp"], root / paths["train"]["targets"]["temp"], config, "temp")
