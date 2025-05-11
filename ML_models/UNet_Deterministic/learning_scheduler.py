@@ -15,8 +15,7 @@ def get_scheduler(name, optimizer, config):
             mode=config.get("scheduler_mode", "min"),
             factor=float(config.get("scheduler_factor", 0.5)),
             patience=int(config.get("scheduler_patience", 3)),
-            threshold=float(config.get("scheduler_threshold", 1e-4)),
-            verbose=True
+            threshold=float(config.get("scheduler_threshold", 1e-4))
         )
     else:
         raise ValueError(f"Unsupported scheduler: {name}")
