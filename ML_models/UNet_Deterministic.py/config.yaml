@@ -23,19 +23,19 @@ split:
   #Above code Will be later customised for spatial cross val ewtcc
 
 train:
-  num_epochs: 30
-  checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model.pth
+  num_epochs: 10
+  checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model_Cyclical_LR.pth
   in_channels: 2
   out_channels: 2
   optimizer: "Adam"
   loss_fn: "MSE"
   scheduler: "CyclicLR"
   scheduler_mode: "triangular"
-  base_lr: 1e-3
-  max_lr: 1e-4
+  base_lr: 1e-4
+  max_lr: 1e-3
 
   step_size_up: 1000
-  wandb_project: "unet_downscaling"
+  wandb_project: "UNet_Deterministic_YAML_check"
   wandb_run_name: "CLR_experiment"
 
 # Placeholder for the paths in the untracked .paths.yaml file

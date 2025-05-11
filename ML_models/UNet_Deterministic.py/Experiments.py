@@ -32,13 +32,13 @@ def run_experiment(train_dataset, val_dataset, config):
 
     optimizer = torch.optim.Adam(
         model.parameters(),
-        lr=train_cfg.get("max_lr", 1e-3)
+        lr=float(train_cfg.get("max_lr", 1e-3))
     )
 
     scheduler = CyclicLR(
         optimizer,
-        base_lr=train_cfg.get("base_lr", 1e-4),
-        max_lr=train_cfg.get("max_lr", 1e-3),
+        base_lr=float(train_cfg.get("base_lr", 1e-4)),
+        max_lr=float(train_cfg.get("max_lr", 1e-3)),
         step_size_up=train_cfg.get("step_size_up", 1000),
         mode=train_cfg.get("scheduler_mode", "triangular")
     )
