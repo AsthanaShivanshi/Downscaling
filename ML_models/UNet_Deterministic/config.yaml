@@ -23,22 +23,26 @@ split:
   #Above code Will be later customised for spatial cross val ewtcc
 
 train:
-  num_epochs: 10
+  num_epochs: 20
   checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model_CyclicalLR_Triangular2_100samples_20epochs.pth
   in_channels: 2
   out_channels: 2
   optimizer: "Adam"
   loss_fn: "MSE"
-  scheduler: "CyclicLR"
-  scheduler_mode: "triangular2" #Can be changed to triangular2 or triangular depending on requirements
+  #scheduler: "CyclicLR"
+  scheduler: "ReduceLROnPlateau"
+  scheduler_mode: "min"
+  #scheduler_mode: "triangular2" #Can be changed to triangular2 or triangular depending on requirements
   base_lr: 1e-4
   max_lr: 1e-3
+  scheduler_factor: 0.5 #Halving the lr upon plateauing
+  scheduler_patience: 3 #Waiting for N epochs for no improvement
   #How was step size chosen? Numer of iterations(training batches) per epoch= len(training_set)/batch_size
   #So following from above, step size up= Number iter per epoch/2
-  step_size_up: 208
+  #step_size_up: 208
   
   wandb_project: "UNet_Deterministic"
-  wandb_run_name: "Experiment_02_QuickTest_Triangular2LR"
+  wandb_run_name: "Experiment_03_QuickTest_ReduceLROnPlateau"
 
 # Placeholder for the paths in the untracked .paths.yaml file
 data: {}
