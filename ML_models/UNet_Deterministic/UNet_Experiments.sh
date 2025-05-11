@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=UNet_training_ALL_samples_Cyclical_LR     
-#SBATCH --output=job_output-%j.txt 
-#SBATCH --error=job_error-%j.txt  
+#SBATCH --job-name=UNet_training_100_samples_Cyclical_LR     
+#SBATCH --output=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic/job_output-Cyclical_LR-%j.txt 
+#SBATCH --error=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic/job_error-Cyclical_LR%j.txt  
 #SBATCH --ntasks=1             
 #SBATCH --cpus-per-task=4     
 #SBATCH --time=3-00:00:00         
