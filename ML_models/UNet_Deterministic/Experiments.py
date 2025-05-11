@@ -8,6 +8,7 @@ from Train import train_model, checkpoint_save
 import os
 import wandb
 from torch.optim.lr_scheduler import CyclicLR
+from learning_scheduler import get_scheduler
 
 def run_experiment(train_dataset, val_dataset, config):
     train_cfg = config["train"]
@@ -35,13 +36,8 @@ def run_experiment(train_dataset, val_dataset, config):
         lr=float(train_cfg.get("max_lr", 1e-3))
     )
 
-    scheduler = CyclicLR(
-        optimizer,
-        base_lr=float(train_cfg.get("base_lr", 1e-4)),
-        max_lr=float(train_cfg.get("max_lr", 1e-3)),
-        step_size_up=train_cfg.get("step_size_up", 1000),
-        mode=train_cfg.get("scheduler_mode", "triangular")
-    )
+    scheduler_name = train_cfg.get("scheduler", "CyclicLR")
+    scheduler = get_scheduler(scheduler_name, optimizer, train_cfg)
 
     criterion = nn.MSELoss()
 
@@ -82,3 +78,4 @@ def run_experiment(train_dataset, val_dataset, config):
     )
 
     return trained_model, history, final_val_loss
+

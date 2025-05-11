@@ -33,6 +33,8 @@ def main(config):
     train_dataset = PairedDataset(precip_train, temp_train)
     val_dataset = PairedDataset(precip_val, temp_val)
     test_dataset = PairedDataset(precip_test, temp_test)
+    
+    print(f"Using learning rate scheduler: {config['train'].get('scheduler', 'CyclicLR')}")
 
     print(f"Train samples: {len(train_dataset)}, Val: {len(val_dataset)}, Test: {len(test_dataset)}")
 
