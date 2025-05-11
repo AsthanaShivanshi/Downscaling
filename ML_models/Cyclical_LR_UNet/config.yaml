@@ -1,0 +1,15 @@
+experiment:
+  batch_size: 32
+  num_workers: 4
+  quick_test: true
+
+variables:
+  input:
+    precip: pr
+    temp: tas
+  target:
+    precip: RhiresD
+    temp: TabsD
+
+# Placeholder for the paths in the untracked .paths.yaml file
+data: {}

@@ -9,7 +9,7 @@
 # Ignore temporary files
 *.log
 *.tmp
-
+.paths.yaml
 # Ignore directories
 data/
 results/
