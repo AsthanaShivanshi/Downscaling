@@ -1,10 +1,10 @@
 import sys
 sys.path.append("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/")
-from UNet import UNet
+from ML_models.Initial_UNet.UNet import UNet
 import torch
 import torch.nn as nn
-from Train import train_model
-from Train import checkpoint_save
+from ML_models.Initial_UNet.Train import train_model
+from ML_models.Initial_UNet.Train import checkpoint_save
 import os
 import wandb
 

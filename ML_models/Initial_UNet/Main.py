@@ -5,9 +5,9 @@ import xarray as xr
 import os
 import wandb
 
-from Experiments import run_experiment
-from Downscaling_Dataset_Prep import DownscalingDataset, PairedDataset
-from config import CONFIG
+from ML_models.Initial_UNet.Experiments import run_experiment
+from ML_models.Initial_UNet.Downscaling_Dataset_Prep import DownscalingDataset, PairedDataset
+from ML_models.Initial_UNet.config import CONFIG
 
 def load_dataset(input_path, target_path, input_var, target_var):
     input_ds = xr.open_dataset(input_path)
