@@ -31,8 +31,9 @@ train:
   loss_fn: "MSE"
   scheduler: "CyclicLR"
   scheduler_mode: "triangular"
-  base_lr: 1e-4
-  max_lr: 1e-3
+  base_lr: 1e-3
+  max_lr: 1e-4
+
   step_size_up: 1000
   wandb_project: "unet_downscaling"
   wandb_run_name: "CLR_experiment"
