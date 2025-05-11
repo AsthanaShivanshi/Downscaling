@@ -14,22 +14,35 @@ def train_one_epoch(model, dataloader, optimizer, criterion, scheduler=None, con
         outputs = model(inputs, targets)
         loss = criterion(outputs, targets)
         loss.backward()
-        optimizer.step()
 
+        # Gradient norm (L2) per batch
+        total_norm = 0.0
+        for p in model.parameters():
+            if p.grad is not None:
+                total_norm += p.grad.norm(2).item() ** 2
+        grad_norm = total_norm ** 0.5
+
+        optimizer.step()
         if scheduler:
             scheduler.step()
 
         running_loss += loss.item()
 
-        log_dict = {"train_loss_batch": loss.item()}
-        if scheduler:
-            log_dict["lr"] = scheduler.get_last_lr()[0]
-        wandb.log(log_dict)
+        # Log learning rate after every 20 batches as well in addition to the epoch loss
+        if i % 20 == 0:
+            log_dict = {
+                "train_loss_batch": loss.item(),
+                "grad_norm": grad_norm
+            }
+            if scheduler:
+                log_dict["lr"] = scheduler.get_last_lr()[0]
+            wandb.log(log_dict)
 
         if quick_test and i == 2:
             break
 
     return running_loss / (i + 1)
+
 
 def validate(model, dataloader, criterion, config=None):
     model.eval()
@@ -70,6 +83,7 @@ def train_model(model, train_loader, val_loader, optimizer, criterion, scheduler
             "epoch": epoch + 1,
             "train_loss_epoch": train_loss,
             "val_loss_epoch": val_loss,
+            "lr_epoch": scheduler.get_last_lr()[0] if scheduler else None
         })
 
         if val_loss < best_val_loss:
@@ -77,6 +91,7 @@ def train_model(model, train_loader, val_loader, optimizer, criterion, scheduler
             checkpoint_save(model, optimizer, epoch+1, val_loss, checkpoint_path)
 
     return model, history
+
 
 def checkpoint_save(model, optimizer, epoch, loss, path):
     checkpoint = {
