@@ -24,7 +24,7 @@ split:
 
 train:
   num_epochs: 10
-  checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model_Cyclical_LR.pth
+  checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model_Cyclical_LR_100samples_20epochs.pth
   in_channels: 2
   out_channels: 2
   optimizer: "Adam"
@@ -34,7 +34,9 @@ train:
   base_lr: 1e-4
   max_lr: 1e-3
 
-  step_size_up: 1000
+  step_size_up: 208
+  #How was step size chosen? Numer of iterations(training batches) per epoch= len(training_set)/batch_size
+  #So following from above, step size up= Number iter per epoch//2
   wandb_project: "UNet_Deterministic_YAML_check"
   wandb_run_name: "CLR_experiment"
 
