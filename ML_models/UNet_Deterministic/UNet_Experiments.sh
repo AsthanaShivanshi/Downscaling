@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=UNet_training_100_samples_Cyclical_LR     
+#SBATCH --job-name=UNet_training_100_samples_Triangular2_LR    
 #SBATCH --output=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic/job_output-Cyclical_LR-%j.txt 
 #SBATCH --error=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic/job_error-Cyclical_LR%j.txt  
 #SBATCH --ntasks=1             
