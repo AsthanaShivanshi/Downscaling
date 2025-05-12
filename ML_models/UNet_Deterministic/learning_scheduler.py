@@ -12,7 +12,7 @@ def get_scheduler(name, optimizer, config):
             step_size_up=int(config.get("step_size_up", 208)),
             mode=config.get("scheduler_mode", "triangular") #Can be changed to triangular2 in the .yaml file
         )
-    elif name == "ReduceLROnPlateau":
+    if name == "ReduceLROnPlateau":
         return ReduceLROnPlateau(
             optimizer,
             mode=config.get("scheduler_mode", "min"),
@@ -20,7 +20,7 @@ def get_scheduler(name, optimizer, config):
             patience=int(config.get("scheduler_patience", 3)),
             threshold=float(config.get("scheduler_threshold", 1e-4))
 
-    elif name== "StepLR":
+    if name== "StepLR":
     return StepLR(optimizer,
                   step_size=int(config.get("step_size",2)),
                   gamma=float(config.get("gamma",0.1)))
