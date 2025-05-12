@@ -1,3 +1,6 @@
+
+#Great resource on learning rate schedulers : https://medium.com/data-scientists-diary/guide-to-pytorch-learning-rate-scheduling-b5d2a42f56d4
+
 from torch.optim.lr_scheduler import CyclicLR, ReduceLROnPlateau,StepLR
 
 def get_scheduler(name, optimizer, config):
