@@ -9,6 +9,7 @@ import os
 import wandb
 from torch.optim.lr_scheduler import CyclicLR
 from learning_scheduler import get_scheduler
+from torch.optim.lr_scheduler import StepLR
 
 def run_experiment(train_dataset, val_dataset, config):
     train_cfg = config["train"]

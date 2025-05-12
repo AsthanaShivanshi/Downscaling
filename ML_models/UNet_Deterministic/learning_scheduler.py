@@ -1,4 +1,4 @@
-from torch.optim.lr_scheduler import CyclicLR, ReduceLROnPlateau
+from torch.optim.lr_scheduler import CyclicLR, ReduceLROnPlateau,StepLR
 
 def get_scheduler(name, optimizer, config):
     if name == "CyclicLR":
@@ -16,6 +16,11 @@ def get_scheduler(name, optimizer, config):
             factor=float(config.get("scheduler_factor", 0.5)),
             patience=int(config.get("scheduler_patience", 3)),
             threshold=float(config.get("scheduler_threshold", 1e-4))
+
+    elif name== "StepLR":
+    return StepLR(optimizer,
+                  step_size=int(config.get("step_size",2)),
+                  gamma=float(config.get("gamma",0.1)))
         )
     else:
         raise ValueError(f"Unsupported scheduler: {name}")
