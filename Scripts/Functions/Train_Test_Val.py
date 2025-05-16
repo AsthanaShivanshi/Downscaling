@@ -8,77 +8,80 @@
 
 import torch
 import pandas as pd
-from collections import defaultdict
 import random
+from collections import defaultdict
+import xarray as xr
+import os
 
-def split_by_moving_blocks(times, config=None):
-    if config is None:
-        config = {}
+def split_by_decade(data, output_path, file_basename):
+    assert "time" in data.dims, "Data must have a 'time' dimension."
 
-    split_cfg = config.get("split", {})
-    seed = split_cfg.get("seed", 42)
-
+    seed = 42
     torch.manual_seed(seed)
     random.seed(seed)
 
-    times = pd.to_datetime(times)
+    times = pd.to_datetime(data.time.values)
     year_to_indices = defaultdict(list)
 
     for idx, t in enumerate(times):
         year_to_indices[t.year].append(idx)
 
     years = sorted(year_to_indices.keys())
-
-    # 10-year custom blocks from 1971 onward
-    start_year = 1971
     decade_blocks = []
 
+    start_year = 1971
     while start_year + 9 <= 2020:
         block_years = list(range(start_year, start_year + 10))
         if all(y in year_to_indices for y in block_years):
             decade_blocks.append(block_years)
         start_year += 10
 
-    # remaining 2021–2023 to train
     last_block_year = decade_blocks[-1][-1] if decade_blocks else 1980
     remaining_years = [y for y in years if y > last_block_year]
 
     train_indices, val_indices, test_indices = [], [], []
-    train_years_all, val_years_all, test_years_all = [], [], []
 
     for block in decade_blocks:
         valid_splits = []
 
-        for train_start in range(0, 4): 
+        # Moving 7-year window
+        for train_start in range(0, 4):
             train_years = block[train_start:train_start + 7]
+            remaining = [y for y in block if y not in train_years]
 
-            remaining_years_in_block = [y for y in block if y not in train_years]
+            # 2-year val window in remaining 3 years
+            for val_start in range(0, 2):
+                val_years = remaining[val_start:val_start + 2]
+                test_years = [y for y in remaining if y not in val_years]
 
-            for val_start in range(len(remaining_years_in_block) - 2 + 1): 
-                val_years = remaining_years_in_block[val_start:val_start + 2]
-                test_years = [y for y in remaining_years_in_block if y not in val_years]
+                valid_splits.append((train_years, val_years, test_years))
 
-                if len(test_years) == 1:
-                    valid_splits.append((train_years, val_years, test_years))
-
-        # Picking one valid combination randomly, for moving blocks within the decade being randomly placed
         train_years, val_years, test_years = random.choice(valid_splits)
 
-        def gather(year_list):
-            indices = sum([year_to_indices[y] for y in year_list], [])
-            return torch.tensor(indices)[torch.randperm(len(indices))] if indices else torch.tensor([])
+        def gather_indices(years_list):
+            indices = sum([year_to_indices[y] for y in years_list], [])
+            return torch.tensor(sorted(indices)) if indices else torch.tensor([])  # Chronological order, not shiffled
 
-        train_indices.append(gather(train_years))
-        val_indices.append(gather(val_years))
-        test_indices.append(gather(test_years))
+        train_indices.append(gather_indices(train_years))
+        val_indices.append(gather_indices(val_years))
+        test_indices.append(gather_indices(test_years))
 
-        train_years_all.extend(train_years)
-        val_years_all.extend(val_years)
-        test_years_all.extend(test_years)
-
-    # leftover to training
+    # Remining years go into (2021–2023) to training
     for y in remaining_years:
         if y in year_to_indices:
-            train_indices.append(torch.tensor(year_to_indices[y])[torch.randperm(len(year_to_indices[y]))])
-            train_years_all.append(y)
-    return torch.cat(train_indices), torch.cat(val_indices), torch.cat(test_indices)
+            train_indices.append(torch.tensor(sorted(year_to_indices[y])))  # Chronological order
+
+    train_idx = torch.cat(train_indices)
+    val_idx = torch.cat(val_indices)
+    test_idx = torch.cat(test_indices)
+
+    train_data = data.isel(time=train_idx)
+    val_data = data.isel(time=val_idx)
+    test_data = data.isel(time=test_idx)
+
+    os.makedirs(output_path, exist_ok=True)
+    train_data.to_netcdf(os.path.join(output_path, f"{file_basename}_train.nc"))
+    val_data.to_netcdf(os.path.join(output_path, f"{file_basename}_val.nc"))
+    test_data.to_netcdf(os.path.join(output_path, f"{file_basename}_test.nc"))
+
+    return train_data, val_data, test_data
