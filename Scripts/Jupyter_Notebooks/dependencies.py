@@ -20,7 +20,6 @@ from statsmodels.graphics.gofplots import qqplot_2samples
 from mpl_toolkits.mplot3d import Axes3D
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
-import geopandas as gpd
 from pyproj import Transformer
 from statsmodels.distributions.empirical_distribution import ECDF
 from scipy.stats import multivariate_normal
