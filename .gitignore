@@ -7,10 +7,6 @@
 *.png
 environment.sh
 
-.ipynb 
-
-#For now, not tracking the jupyter notebooks as well. LATER might change
-
 # temp files
 *.log
 *.tmp
