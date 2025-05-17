@@ -1,7 +1,7 @@
 # dependencies for the data exploration part of the project 
 #How to load : load in your notebook using from dependencies import * or if it is a different subfolder , use the following code block to import 
 # import sys
-#sys.path.append('utils')  # give the full path to the utils folder within ""
+#sys.path.append('utils')  # give the full/relative path to the utils folder within ""
 #from my_imports import *
 import numpy as np
 import xarray as xr
