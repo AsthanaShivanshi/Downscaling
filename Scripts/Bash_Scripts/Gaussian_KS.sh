@@ -11,8 +11,8 @@
 
 module load python
 
-source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
+source ../../environment.sh
 
-cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Scripts/Functions
+cd ../Scripts/Functions
 
 python Run_KS_Tests.py

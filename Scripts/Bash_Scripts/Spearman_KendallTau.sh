@@ -9,11 +9,11 @@
 #SBATCH --partition=cpu  
 # (NO --gres=gpu:1)
 
+source ../../environment.sh
+
 module load python
 
-source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
-
-cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Scripts/Functions
+cd ../Scripts/Functions
 
 python correlation_Kendall_Spearman.py
 

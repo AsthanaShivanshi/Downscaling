@@ -15,7 +15,7 @@ source ../../environment.sh
 module load python
 
 #Directory containing the functions
-cd ../../Functions
+cd ../Scripts/Functions
 
 SEASON_LIST=("JJA" "SON" "DJF" "MAM")
 
