@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/Cyclical_LR_UNet")
+sys.path.append("../ML_models/Cyclical_LR_UNet")
 
 from UNet import UNet
 import torch
@@ -72,7 +72,7 @@ def run_experiment(train_dataset, val_dataset, config):
 
     final_val_loss = history['val_loss'][-1]
 
-    checkpoint_path = train_cfg.get("checkpoint_path", "checkpoints/best_model.pth")
+    checkpoint_path = train_cfg.get("checkpoint_path", "../checkpoints/best_model.pth")
     checkpoint_save(
         model, optimizer, epoch=train_cfg.get("num_epochs", 30),
         loss=final_val_loss, path=checkpoint_path

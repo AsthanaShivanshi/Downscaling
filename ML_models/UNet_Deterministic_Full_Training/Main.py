@@ -47,8 +47,8 @@ def main(config):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train UNet model for downscaling.")
     parser.add_argument("--quick_test", action="store_true", help="Run a quick test (overrides config)")
-    parser.add_argument("--config", type=str, default="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training/config.yaml", help="Path to experiment config file")
-    parser.add_argument("--paths", type=str, default="/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training/.paths.yaml", help="Path to private file paths config")
+    parser.add_argument("--config", type=str, default="./config.yaml", help="Path to experiment config file")
+    parser.add_argument("--paths", type=str, default="./.paths.yaml", help="Path to private file paths config")
     args = parser.parse_args()
 
     # Load and merge config

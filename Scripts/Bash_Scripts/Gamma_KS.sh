@@ -10,13 +10,12 @@
 #SBATCH --partition=cpu         
 # (NO --gres=gpu:1 )
               
+source ../../environment.sh
 
 module load python
 
-source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
-
-#Directory containing the pipeline
-cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Scripts/Functions
+#Directory containing the functions
+cd ../../Functions
 
 SEASON_LIST=("JJA" "SON" "DJF" "MAM")
 

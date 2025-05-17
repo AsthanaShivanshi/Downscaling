@@ -24,7 +24,7 @@ split:
 
 train:
   num_epochs: 20
-  checkpoint_path: /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/checkpoints/best_model_Step_LR_100samples_20epochs.pth
+  checkpoint_path: ../checkpoints/best_model_Step_LR_100samples_20epochs.pth
   in_channels: 2
   out_channels: 2
   optimizer: "Adam"

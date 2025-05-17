@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=UNet_training_100_samples_ReduceLROnPlateau    
-#SBATCH --output=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic/job_output-StepLR-%j.txt 
-#SBATCH --error=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic/job_error-StepLR%j.txt  
+#SBATCH --output=job_output-StepLR-%j.txt 
+#SBATCH --error=job_error-StepLR%j.txt  
 #SBATCH --ntasks=1             
 #SBATCH --cpus-per-task=4     
 #SBATCH --time=3-00:00:00         
@@ -12,10 +12,10 @@
 
 module load python
 
-source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
+source ../environment.sh
 
 #Directory containing the pipeline
-cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic
+cd .
 
 export WANDB_MODE="online"
 

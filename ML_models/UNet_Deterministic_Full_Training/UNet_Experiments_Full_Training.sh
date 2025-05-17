@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=UNet_training_Triangualar_LR   
-#SBATCH --output=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training/job_output-triangular-%j.txt 
-#SBATCH --error=/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training/job_error-triangular%j.txt  
+#SBATCH --output=./job_output-triangular-%j.txt 
+#SBATCH --error=./job_error-triangular%j.txt  
 #SBATCH --ntasks=1             
 #SBATCH --cpus-per-task=4     
 #SBATCH --time=3-00:00:00         
@@ -12,10 +12,10 @@
 
 module load python
 
-source /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/MyPythonEnvironment/bin/activate
+source ../environment.sh
 
 #Directory containing the pipeline
-cd /work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Deterministic_Full_Training
+cd .
 
 export WANDB_MODE="online"
 

@@ -1,6 +1,4 @@
 import sys
-sys.path.append("/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/ML_models/UNet_Determistic_Full_Training")
-
 from UNet import UNet
 import torch
 import torch.nn as nn
@@ -71,7 +69,7 @@ def run_experiment(train_dataset, val_dataset, config):
 
     final_val_loss = history['val_loss'][-1]
 
-    checkpoint_path = train_cfg.get("checkpoint_path", "checkpoints/best_model.pth")
+    checkpoint_path = train_cfg.get("checkpoint_path", "../checkpoints/best_model.pth")
     checkpoint_save(
         model, optimizer, epoch=train_cfg.get("num_epochs", 20),
         loss=final_val_loss, path=checkpoint_path

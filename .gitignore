@@ -1,16 +1,19 @@
-# Ignore data files
+# data files and secure config
 
 *.nc
 *.csv
 *.txt
 *.pth
 *.png
+environment.sh
 
-# Ignore temporary files
+# temp files
 *.log
 *.tmp
 .paths.yaml
-# Ignore directories
+
+#directories
+
 data/
 results/
 checkpoints/
