@@ -88,9 +88,9 @@ def plot_correlations(lon, lat, correlation_maps, title_prefix, output_dir):
     print(f"Saved {fig_count} plots for {title_prefix}")
 
 def main():
-    ds1_path = "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/targets_tas_masked_train.nc"
-    ds2_path = "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/data/processed/Bicubic/Train/targets_precip_masked_train.nc"
-    output_dir = "/work/FAC/FGSE/IDYST/tbeucler/downscaling/sasthana/Downscaling/Downscaling/Outputs/plots"
+    ds1_path = "targets_tas_masked_train.nc"
+    ds2_path = "targets_precip_masked_train.nc"
+    output_dir = "Outputs/plots"
     os.makedirs(output_dir, exist_ok=True)
 
     lon, lat, spearman_maps, kendall_maps = calculate_correlation(ds1_path, ds2_path, n_jobs=4)
